@@ -1,0 +1,95 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
+    <PackageReference Include="Minio" Version="6.0.4" />
+  </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\client\css\ajax-loader.gif" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\css\normalize.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\css\vendor.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\icomoon\fonts\icomoon.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\icomoon\fonts\icomoon.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\icomoon\fonts\icomoon.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\icomoon\fonts\icomoon.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\icomoon\icomoon.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\icomoon\Read Me.txt" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\icomoon\selection.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\app-store.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\chocolat\close.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\chocolat\fullscreen-black.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\chocolat\fullscreen.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\chocolat\left.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\chocolat\loader.gif" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\chocolat\right.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\client-image1.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\client-image2.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\client-image3.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\client-image4.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\client-image5.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\curly-divider.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\default.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\device.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\google-play.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\item.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\item1.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\item3.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\item4.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\item5.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\leaf.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\main-banner1.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\main-banner2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\main-logo.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\ns-arrow-right.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\pattern1.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\pattern2.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\post-img1.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\post-img2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\post-img3.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item1.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item3.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item4.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item5.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item6.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item7.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\product-item8.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\single-image.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item1.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item3.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item4.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item5.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item6.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item7.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\images\tab-item8.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\index.html" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\js\jquery-1.11.0.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\js\modernizr.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\js\plugins.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\js\script.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\js\slideNav.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\js\slideNav.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\readme.txt" />
+      <_ContentIncludedByDefault Remove="wwwroot\client\style.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+      <Folder Include="Models\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+</Project>
