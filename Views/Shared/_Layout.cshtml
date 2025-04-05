@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using QLbansach_tutorial.Models
+@using QLbansach_tutorial.Services
+@inject INhaxuatbanService nhaxuatbans
+@using QLbansach_tutorial.Services
+@inject IChudeService chudes
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -92,21 +97,30 @@
                                         <li class="menu-item active"><a href="#home">Home</a></li>
                                         <li class="menu-item has-sub">
                                             <a href="#pages" class="nav-link">Pages</a>
-
                                             <ul>
-                                                <li class="active"><a href="index.html">Home</a></li>
-                                                <li><a href="index.html">About</a></li>
-                                                <li><a href="index.html">Styles</a></li>
-                                                <li><a href="index.html">Blog</a></li>
-                                                <li><a href="index.html">Post Single</a></li>
-                                                <li><a href="index.html">Our Store</a></li>
-                                                <li><a href="index.html">Product Single</a></li>
-                                                <li><a href="index.html">Contact</a></li>
-                                                <li><a href="index.html">Thank You</a></li>
+                                                @foreach (var theloai in await chudes.GetChude())
+                                                {
+                                                    
+                                                        <li class="active"><a href="index.html">@theloai.TenChuDe</a></li>
+                                                    
+                                                }
                                             </ul>
+                                            
 
                                         </li>
-                                        <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
+                                        <li class="menu-item">
+                                            <a href="#featured-books" class="nav-link">Nhà xuất bản</a>
+                                            <ul>
+                                                @foreach (var nxb in await nhaxuatbans.GetNhaxuatbansAsync())
+                                                {
+
+                                                    <li class="active"><a href="index.html">@nxb.TenNxb</a></li>
+
+                                                }
+                                                
+
+                                            </ul>
+                                        </li>
                                         <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
                                         <li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>
                                         <li class="menu-item"><a href="#latest-blog" class="nav-link">Articles</a></li>

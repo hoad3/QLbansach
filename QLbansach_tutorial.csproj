@@ -86,8 +86,4 @@
       <_ContentIncludedByDefault Remove="wwwroot\client\style.css" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
-
 </Project>
