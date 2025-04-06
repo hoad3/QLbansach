@@ -1,109 +1,120 @@
-﻿CREATE DATABASE BookStoreDB;
-GO
+﻿create table CHUDE
+(
+MaCD     int identity
+primary key,
+TenChuDe nvarchar(100)
+)
+go
 
-USE BookStoreDB;
-GO
+create table NHAXUATBAN
+(
+MaNXB     int identity
+primary key,
+TenNXB    nvarchar(100),
+Diachi    nvarchar(200),
+Dienthoai nvarchar(20)
+)
+go
 
-CREATE TABLE Cart (
-id INT PRIMARY KEY,
-maKH INT,
-ma_sach INT,
-gia DECIMAL(10, 2),
-sl INT,
-tongtien DECIMAL(10, 2)
-);
+create table Roles
+(
+id       int identity
+primary key,
+TenQuyen nvarchar(50)
+)
+go
 
-CREATE TABLE DONDATHANG (
-MaDonHang INT PRIMARY KEY,
-Ngaydat DATE,
-Ngaygiao DATE,
-Tinhtranggiaohang NVARCHAR(50),
-maKH INT
-);
+create table KHACHHANG
+(
+maKH        int identity
+primary key,
+HoTen       nvarchar(100),
+Taikhoan    nvarchar(50),
+Matkhau     nvarchar(50),
+Email       nvarchar(100),
+DiachiKH    nvarchar(200),
+DienthoaiKH nvarchar(20),
+idQuyen     int
+references Roles
+)
+go
 
-CREATE TABLE CHITIETDONDATHANG (
-MaDonHang INT,
-Masach INT,
-Soluong INT,
-PRIMARY KEY (MaDonHang, Masach)
-);
+create table DONDATHANG
+(
+MaDonHang         int identity
+primary key,
+Ngaydat           date,
+ngaygiao          date,
+Tinhtranggiaohang nvarchar(50),
+maKH              int
+references KHACHHANG
+)
+go
 
-CREATE TABLE KHACHHANG (
-MaKH INT PRIMARY KEY,
-HoTen NVARCHAR(100),
-Taikhoan NVARCHAR(50),
-Matkhau NVARCHAR(50),
-Email NVARCHAR(100),
-DiachiKH NVARCHAR(200),
-DienthoaiKH NVARCHAR(20),
-Ngaysinh DATE,
-idQuyen INT
-);
+create table SACH
+(
+Masach      int identity
+primary key,
+Tensach     nvarchar(100),
+Giaban      decimal(10, 2),
+Mota        nvarchar(500),
+Anhbia      nvarchar(200),
+ngaycapnhat date,
+Soluongton  int,
+MaCD        int
+references CHUDE,
+MaNXB       int
+references NHAXUATBAN
+)
+go
 
-CREATE TABLE Roles (
-id INT PRIMARY KEY,
-TenQuyen NVARCHAR(50)
-);
+create table CHITIETDONDATHANG
+(
+MaDonHang int not null
+references DONDATHANG,
+Masach    int not null
+references SACH,
+soluong   int,
+primary key (MaDonHang, Masach)
+)
+go
 
-CREATE TABLE VIETSAC (
-MaTG INT,
-Masach INT,
-Vaitro NVARCHAR(50),
-Vitri NVARCHAR(50),
-PRIMARY KEY (MaTG, Masach)
-);
+create table Cart
+(
+id       int identity
+primary key,
+maKH     int
+references KHACHHANG,
+ma_sach  int
+references SACH,
+gia      decimal(10, 2),
+sl       int,
+tongtien decimal(10, 2)
+)
+go
 
-CREATE TABLE SACH (
-Masach INT PRIMARY KEY,
-Tensach NVARCHAR(100),
-Giaban DECIMAL(10, 2),
-Mota NVARCHAR(500),
-Anhbia NVARCHAR(200),
-Ngaycapnhat DATE,
-Soluongton INT,
-MaCD INT,
-MaNXB INT
-);
+create table TACGIA
+(
+MaTG      int identity
+primary key,
+TenTG     nvarchar(100),
+Diachi    nvarchar(200),
+Tieusu    nvarchar(500),
+Dienthoai nvarchar(20)
+)
+go
 
-CREATE TABLE NHAXUATBAN (
-MaNXB INT PRIMARY KEY,
-TenNXB NVARCHAR(100),
-Diachi NVARCHAR(200),
-Dienthoai NVARCHAR(20)
-);
+create table VIETSAC
+(
+MaTG   int not null
+references TACGIA,
+Masach int not null
+references SACH,
+vaitro nvarchar(50),
+Vitri  nvarchar(50),
+primary key (MaTG, Masach)
+)
+go
 
-CREATE TABLE TACGIA (
-MaTG INT PRIMARY KEY,
-TenTG NVARCHAR(100),
-Diachi NVARCHAR(200),
-Tieusu NVARCHAR(500),
-Dienthoai NVARCHAR(20)
-);
 
-CREATE TABLE CHUDE (
-MaCD INT PRIMARY KEY,
-TenChuDe NVARCHAR(100)
-);
 
--- Khóa Ngoại
-ALTER TABLE Cart
-ADD FOREIGN KEY (maKH) REFERENCES KHACHHANG(MaKH),
-ADD FOREIGN KEY (ma_sach) REFERENCES SACH(Masach);
-
-ALTER TABLE DONDATHANG
-ADD FOREIGN KEY (maKH) REFERENCES KHACHHANG(MaKH);
-
-ALTER TABLE CHITIETDONDATHANG
-ADD FOREIGN KEY (MaDonHang) REFERENCES DONDATHANG(MaDonHang),
-ADD FOREIGN KEY (Masach) REFERENCES SACH(Masach);
-
-ALTER TABLE KHACHHANG
-ADD FOREIGN KEY (idQuyen) REFERENCES Roles(id);
-
-ALTER TABLE VIETSAC
-ADD FOREIGN KEY (MaTG) REFERENCES TACGIA(MaTG),
-ADD FOREIGN KEY (Masach) REFERENCES SACH(Masach);
-
-ALTER TABLE SACH
-ADD FOREIGN KEY (MaCD) REFERENCES CHUDE(MaCD),
-ADD FOREIGN KEY (MaNXB) REFERENCES NHAXUATBAN(MaNXB);
