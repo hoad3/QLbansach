@@ -1,0 +1,122 @@
+@model IEnumerable<QLbansach_tutorial.Models.Sach>
+@{
+    ViewData["Title"] = "Nhà Sách";
+    var currentSearch = ViewBag.CurrentSearch as QLbansach_tutorial.Models.PayloadIndex;
+}
+
+<section id="featured-books" class="py-5 my-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="section-header align-center">
+                    <div class="title">
+                        <span>Danh sách sản phẩm</span>
+                    </div>
+                    <h2 class="section-title">
+                        @if (ViewBag.SelectedCategory != null)
+                        {
+                            @ViewBag.SelectedCategory
+                        }
+                        else
+                        {
+                            @:Nhà Sách
+                        }
+                    </h2>
+                </div>
+
+                <div class="search-filters mb-4">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" name="Search" class="form-control" placeholder="Tìm kiếm sách..." value="@currentSearch?.Search">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="MaCD" class="form-select">
+                                <option value="0">Tất cả chủ đề</option>
+                                @foreach (var chude in ViewBag.ChuDes)
+                                {
+                                    <option value="@chude.MaCd" selected="@(currentSearch?.MaCD == chude.MaCd)">@chude.TenChuDe</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="MaNXB" class="form-select">
+                                <option value="0">Tất cả nhà xuất bản</option>
+                                @foreach (var nxb in ViewBag.NhaXuatBans)
+                                {
+                                    <option value="@nxb.MaNxb" selected="@(currentSearch?.MaNXB == nxb.MaNxb)">@nxb.TenNxb</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="product-list" data-aos="fade-up">
+                    <div class="row" id="bookContainer">
+                        @await Html.PartialAsync("_BookList", Model)
+                    </div>
+                </div>
+
+                <div class="text-center mt-4" id="loadMoreContainer">
+                    <button id="loadMoreBtn" class="btn btn-primary" style="display: none;">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        Load More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let currentPage = 1;
+        const totalPages = @ViewBag.TotalPages;
+        let isLoading = false;
+
+        $(document).ready(function() {
+            // Hiển thị nút Load More nếu còn trang tiếp theo
+            if (currentPage < totalPages) {
+                $('#loadMoreBtn').show();
+            }
+        });
+
+        $('#loadMoreBtn').click(function() {
+            if (!isLoading && currentPage < totalPages) {
+                loadMoreBooks();
+            }
+        });
+
+        function loadMoreBooks() {
+            isLoading = true;
+            currentPage++;
+            
+            // Hiển thị spinner và disable nút
+            $('#loadMoreBtn').prop('disabled', true);
+            $('#loadMoreBtn .spinner-border').show();
+            $('#loadMoreBtn').text('Loading...');
+
+            // Lấy các tham số tìm kiếm hiện tại
+            const searchParams = new URLSearchParams(window.location.search);
+            searchParams.set('Trang', currentPage);
+
+            $.get(`/Sach/LoadMore?${searchParams.toString()}`, function(data) {
+                $('#bookContainer').append(data);
+                
+                // Ẩn spinner và enable nút
+                $('#loadMoreBtn .spinner-border').hide();
+                $('#loadMoreBtn').prop('disabled', false);
+                $('#loadMoreBtn').text('Load More');
+                
+                // Ẩn nút nếu đã load hết
+                if (currentPage >= totalPages) {
+                    $('#loadMoreBtn').hide();
+                }
+                
+                isLoading = false;
+            });
+        }
+    </script>
+} 
