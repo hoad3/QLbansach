@@ -90,7 +90,7 @@
 
                     <div class="product-list" data-aos="fade-up">
                         <div class="row">
-                            @foreach (var sach in await Sachs.GetAllSachesAsync())
+                            @foreach (var sach in await Sachs.GetFirst4SachesAsync())
                             {
                                 <div class="col-md-3">
                                     <div class="product-item">
@@ -107,51 +107,7 @@
                                     </div>
                                 </div>
                             }
-                            @* <div class="col-md-3"> *@
-                            @*     <div class="product-item"> *@
-                            @*         <figure class="product-style"> *@
-                            @*             <img src="/client/images/product-item2.jpg" alt="Books" class="product-item"> *@
-                            @*             <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to *@
-                            @*                 Cart</button> *@
-                            @*         </figure> *@
-                            @*         <figcaption> *@
-                            @*             <h3>Great travel at desert</h3> *@
-                            @*             <span>Sanchit Howdy</span> *@
-                            @*             <div class="item-price">$ 38.00</div> *@
-                            @*         </figcaption> *@
-                            @*     </div> *@
-                            @* </div> *@
-                            @* *@
-                            @* <div class="col-md-3"> *@
-                            @*     <div class="product-item"> *@
-                            @*         <figure class="product-style"> *@
-                            @*             <img src="/client/images/product-item3.jpg" alt="Books" class="product-item"> *@
-                            @*             <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to *@
-                            @*                 Cart</button> *@
-                            @*         </figure> *@
-                            @*         <figcaption> *@
-                            @*             <h3>The lady beauty Scarlett</h3> *@
-                            @*             <span>Arthur Doyle</span> *@
-                            @*             <div class="item-price">$ 45.00</div> *@
-                            @*         </figcaption> *@
-                            @*     </div> *@
-                            @* </div> *@
-                            @* *@
-                            @* <div class="col-md-3"> *@
-                            @*     <div class="product-item"> *@
-                            @*         <figure class="product-style"> *@
-                            @*             <img src="/client/images/product-item4.jpg" alt="Books" class="product-item"> *@
-                            @*             <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to *@
-                            @*                 Cart</button> *@
-                            @*         </figure> *@
-                            @*         <figcaption> *@
-                            @*             <h3>Once upon a time</h3> *@
-                            @*             <span>Klien Marry</span> *@
-                            @*             <div class="item-price">$ 35.00</div> *@
-                            @*         </figcaption> *@
-                            @*     </div> *@
-                            @* </div> *@
-
+                            
                         </div><!--ft-books-slider-->
                     </div><!--grid-->
 
@@ -163,7 +119,7 @@
                 <div class="col-md-12">
 
                     <div class="btn-wrap align-right">
-                        <a href="#" class="btn-accent-arrow">View all products <i
+                        <a asp-controller="Sach" asp-action="Index" class="btn-accent-arrow">View all products <i
                                 class="icon icon-ns-arrow-right"></i></a>
                     </div>
 
@@ -640,7 +596,7 @@
             <h2 class="section-title divider">Quote of the day</h2>
             <blockquote data-aos="fade-up">
                 <q>“The more that you read, the more things you will know. The more that you learn, the more places
-                    you’ll go.”</q>
+                    you'll go.”</q>
                 <div class="author-name">Dr. Seuss</div>
             </blockquote>
         </div>

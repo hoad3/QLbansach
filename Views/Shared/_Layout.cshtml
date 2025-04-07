@@ -60,15 +60,15 @@
 
                                 <div class="action-menu">
 
-                                    <div class="search-bar">
-                                        <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-                                            <i class="icon icon-search"></i>
-                                        </a>
-                                        <form role="search" method="get" class="search-box">
-                                            <input class="search-field text search-input" placeholder="Search"
-                                                   type="search">
-                                        </form>
-                                    </div>
+                                    @* <div class="search-bar"> *@
+                                    @*     <a href="#" class="search-button search-toggle" data-selector="#header-wrap"> *@
+                                    @*         <i class="icon icon-search"></i> *@
+                                    @*     </a> *@
+                                    @*     <form role="search" method="get" class="search-box"> *@
+                                    @*         <input class="search-field text search-input" placeholder="Search" *@
+                                    @*                type="search"> *@
+                                    @*     </form> *@
+                                    @* </div> *@
                                 </div>
 
                             </div><!--top-right-->
@@ -86,6 +86,7 @@
                             <div class="main-logo">
                                 <a href="index.html"><img src="/client/images/main-logo.png" alt="logo"></a>
                             </div>
+                  
 
                         </div>
 
@@ -96,26 +97,22 @@
                                     <ul class="menu-list">
                                         <li class="menu-item active"><a href="#home">Home</a></li>
                                         <li class="menu-item has-sub">
-                                            <a href="#pages" class="nav-link">Pages</a>
+                                            <a href="#pages" class="nav-link">Chủ đề</a>
                                             <ul>
+                                                <li><a asp-controller="Sach" asp-action="Index" asp-route-MaCD="0">Tất cả chủ đề</a></li>
                                                 @foreach (var theloai in await chudes.GetChude())
                                                 {
-                                                    
-                                                        <li class="active"><a href="index.html">@theloai.TenChuDe</a></li>
-                                                    
+                                                    <li><a asp-controller="Sach" asp-action="Index" asp-route-MaCD="@theloai.MaCd">@theloai.TenChuDe</a></li>
                                                 }
                                             </ul>
-                                            
-
                                         </li>
                                         <li class="menu-item">
                                             <a href="#featured-books" class="nav-link">Nhà xuất bản</a>
                                             <ul>
+                                                <li><a asp-controller="Sach" asp-action="Index" asp-route-MaNXB="0">Tất cả nhà xuất bản</a></li>
                                                 @foreach (var nxb in await nhaxuatbans.GetNhaxuatbansAsync())
                                                 {
-
-                                                    <li class="active"><a href="index.html">@nxb.TenNxb</a></li>
-
+                                                    <li><a asp-controller="Sach" asp-action="Index" asp-route-MaNXB="@nxb.MaNxb">@nxb.TenNxb</a></li>
                                                 }
                                             </ul>
                                         </li>
