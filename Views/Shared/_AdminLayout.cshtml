@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản trị Nhà Sách</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="css/index.css" asp-append-version="true"/>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="logo-text">
+                    QUẢN LÝ<br />SÁCH
+                </div>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a asp-controller="Admin" asp-action="Index" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                
+                <li class="nav-header">QUẢN LÝ</li>
+                
+                <li class="nav-item">
+                    <a asp-controller="Admin" asp-action="Components" class="nav-link">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Components</span>
+                        <i class="fas fa-chevron-right float-end mt-1"></i>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a asp-controller="Admin" asp-action="Products" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Quản lý sách</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a asp-controller="Admin" asp-action="Orders" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Quản lý đơn hàng</span>
+                    </a>
+                </li>
+                
+                <li class="nav-header">ADDONS</li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link collapse-btn">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <main class="content-wrapper">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-light bg-white border-bottom">
+                <div class="flex flex-row h-auto">
+                    <div class="navbar-content d-flex justify-content-between align-items-center w-screen">
+                        <div class="search-container">
+                            <input type="text" class="form-control" placeholder="Search for...">
+                            <button class="btn btn-primary search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="user-actions d-flex align-items-center justify-end">
+                            <div class="notifications me-3">
+                                <a href="#" class="text-decoration-none">
+                                    <i class="fas fa-bell text-secondary position-relative">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">1</span>
+                                    </i>
+                                </a>
+                            </div>
+                            
+                            <div class="messages me-3">
+                                <a href="#" class="text-decoration-none">
+                                    <i class="fas fa-envelope text-secondary position-relative">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">2</span>
+                                    </i>
+                                </a>
+                            </div>
+                            
+                            <div class="user-profile d-flex align-items-center">
+                                <div class="user-name me-2">Douglas McGee</div>
+                                <div class="user-avatar">
+                                    <img src="https://startbootstrap.github.io/startbootstrap-sb-admin-2/img/undraw_profile.svg" alt="User Profile" class="rounded-circle">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Page Content -->
+            <div class="container-fluid p-4">
+                @RenderBody()
+            </div>
+            
+            <!-- Footer -->
+            <footer class="footer mt-auto py-3 text-center">
+                <div class="container">
+                    <span class="text-muted">Copyright © Your Website 2021</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.collapse-btn').click(function (e) {
+                e.preventDefault();
+                $('body').toggleClass('sidebar-collapsed');
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

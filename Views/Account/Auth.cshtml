@@ -1,0 +1,216 @@
+@{
+    ViewData["Title"] = "Đăng nhập & Đăng ký";
+}
+
+@section Scripts {
+    <script src="~/js/Auth.js"></script>
+}
+
+<div class="container-fluid bg-primary py-5" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success mb-4">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                
+                <div class="card shadow">
+                    <div class="card-header bg-white p-0">
+                        <ul class="nav nav-tabs" id="authTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(ViewBag.ShowRegister != true ? "active" : "")" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" 
+                                    type="button" role="tab" aria-controls="login" aria-selected="@(ViewBag.ShowRegister != true ? "true" : "false")">
+                                    Đăng nhập
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(ViewBag.ShowRegister == true ? "active" : "")" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" 
+                                    type="button" role="tab" aria-controls="register" aria-selected="@(ViewBag.ShowRegister == true ? "true" : "false")">
+                                    Đăng ký
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="tab-content" id="authTabContent">
+                            <!-- Đăng nhập -->
+                            <div class="tab-pane fade @(ViewBag.ShowRegister != true ? "show active" : "")" id="login" role="tabpanel" aria-labelledby="login-tab">
+                                <h3 class="text-center mb-4">Đăng nhập tài khoản</h3>
+                                
+                                @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""] != null)
+                                {
+                                    <div class="text-danger mb-3">
+                                        @foreach (var error in ViewData.ModelState[""].Errors)
+                                        {
+                                            <p>@error.ErrorMessage</p>
+                                        }
+                                    </div>
+                                }
+                                
+                                <form method="post" asp-action="Login">
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" id="loginEmail" name="Email" 
+                                            placeholder="Email">
+                                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Email"] != null)
+                                        {
+                                            <div class="text-danger">
+                                                @foreach (var error in ViewData.ModelState["Email"].Errors)
+                                                {
+                                                    <span>@error.ErrorMessage</span>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="invalid-feedback d-none">Email không được bỏ trống</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="password" class="form-control" id="loginPassword" name="Password" 
+                                            placeholder="Mật khẩu">
+                                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Password"] != null)
+                                        {
+                                            <div class="text-danger">
+                                                @foreach (var error in ViewData.ModelState["Password"].Errors)
+                                                {
+                                                    <span>@error.ErrorMessage</span>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="invalid-feedback d-none">Mật khẩu không được bỏ trống</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="rememberMe" name="RememberMe">
+                                            <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <a href="#" class="text-decoration-none">Quên mật khẩu?</a>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Đăng ký -->
+                            <div class="tab-pane fade @(ViewBag.ShowRegister == true ? "show active" : "")" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                <h3 class="text-center mb-4">Đăng ký tài khoản!</h3>
+                                
+                                @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""] != null)
+                                {
+                                    <div class="text-danger mb-3">
+                                        @foreach (var error in ViewData.ModelState[""].Errors)
+                                        {
+                                            <p>@error.ErrorMessage</p>
+                                        }
+                                    </div>
+                                }
+                                
+                                <form method="post" asp-action="Register">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="hoTen" name="HoTen" 
+                                            placeholder="Họ tên">
+                                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["HoTen"] != null)
+                                        {
+                                            <div class="text-danger">
+                                                @foreach (var error in ViewData.ModelState["HoTen"].Errors)
+                                                {
+                                                    <span>@error.ErrorMessage</span>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="invalid-feedback text-danger" id="hoTenError">
+                                            Họ tên không được bỏ trống
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="taiKhoan" name="Taikhoan" 
+                                            placeholder="Tên tài khoản">
+                                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Taikhoan"] != null)
+                                        {
+                                            <div class="text-danger">
+                                                @foreach (var error in ViewData.ModelState["Taikhoan"].Errors)
+                                                {
+                                                    <span>@error.ErrorMessage</span>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="invalid-feedback text-danger" id="taiKhoanError">
+                                            Tên tài khoản không được bỏ trống
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" id="email" name="Email" 
+                                            placeholder="Email">
+                                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Email"] != null)
+                                        {
+                                            <div class="text-danger">
+                                                @foreach (var error in ViewData.ModelState["Email"].Errors)
+                                                {
+                                                    <span>@error.ErrorMessage</span>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="invalid-feedback text-danger" id="emailError">
+                                            Email không được bỏ trống
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <input type="password" class="form-control" id="password" name="Password" 
+                                                placeholder="Mật khẩu">
+                                            @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Password"] != null)
+                                            {
+                                                <div class="text-danger">
+                                                    @foreach (var error in ViewData.ModelState["Password"].Errors)
+                                                    {
+                                                        <span>@error.ErrorMessage</span>
+                                                    }
+                                                </div>
+                                            }
+                                            <div class="invalid-feedback text-danger" id="passwordError">
+                                                Mật khẩu không được bỏ trống
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <input type="password" class="form-control" id="repeatPassword" name="RepeatPassword" 
+                                                placeholder="Nhập lại mật khẩu">
+                                            @if (!ViewData.ModelState.IsValid && ViewData.ModelState["RepeatPassword"] != null)
+                                            {
+                                                <div class="text-danger">
+                                                    @foreach (var error in ViewData.ModelState["RepeatPassword"].Errors)
+                                                    {
+                                                        <span>@error.ErrorMessage</span>
+                                                    }
+                                                </div>
+                                            }
+                                            <div class="invalid-feedback text-danger" id="repeatPasswordError">
+                                                Vui lòng xác nhận lại mật khẩu
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="diachiKH" name="DiachiKH" 
+                                            placeholder="Địa chỉ">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="tel" class="form-control" id="dienthoaiKH" name="DienthoaiKH" 
+                                            placeholder="Điện thoại">
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Đăng ký</button>
+                                    </div>
+                                </form>
+                                <div class="text-center mt-3">
+                                    <p>Already have an account? <a href="#" id="switchToLogin">Login!</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

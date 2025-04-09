@@ -7,7 +7,7 @@ public partial class Dondathang
 {
     public int MaDonHang { get; set; }
 
-    public DateOnly? Ngaydat { get; set; }
+    public DateOnly? Ngatdat { get; set; }
 
     public DateOnly? Ngaygiao { get; set; }
 
@@ -15,7 +15,7 @@ public partial class Dondathang
 
     public int? MaKh { get; set; }
 
-    public virtual ICollection<Chitietdondathang> Chitietdondathangs { get; set; } = new List<Chitietdondathang>();
+    public virtual ICollection<Chitietdonhang> Chitietdonhangs { get; set; } = new List<Chitietdonhang>();
 
     public virtual Khachhang? MaKhNavigation { get; set; }
 }

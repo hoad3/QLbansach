@@ -21,6 +21,8 @@ public partial class Khachhang
 
     public int? IdQuyen { get; set; }
 
+    public DateOnly? NgaySinh { get; set; }
+
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<Dondathang> Dondathangs { get; set; } = new List<Dondathang>();

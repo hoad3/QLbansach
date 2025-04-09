@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QLbansach_tutorial.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/user-account.css" />
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="author" content="">
@@ -53,8 +54,27 @@
                         </div>
                         <div class="col-md-6">
                             <div class="right-element">
-                                <a href="#" class="user-account for-buy"><i
-                                        class="icon icon-user"></i><span>Account</span></a>
+                                <div class="user-account-dropdown">
+                                    <a href="#" class="user-account for-buy">
+                                        <i class="icon icon-user"></i><span>@(User.Identity?.IsAuthenticated == true ? User.Identity.Name : "Account")</span>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        @if (User.Identity?.IsAuthenticated == true)
+                                        {
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a asp-controller="Admin" asp-action="Index" class="dropdown-item">Quản trị</a>
+                                            }
+                                            <a asp-controller="Account" asp-action="Profile" class="dropdown-item">Thông tin tài khoản</a>
+                                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Đăng xuất</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Account" asp-action="Auth" class="dropdown-item">Đăng nhập</a>
+                                            <a asp-controller="Account" asp-action="Auth" asp-route-register="true" class="dropdown-item">Đăng ký</a>
+                                        }
+                                    </div>
+                                </div>
                                 <a href="#" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0
 									$)</span></a>
 

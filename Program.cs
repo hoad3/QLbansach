@@ -1,7 +1,7 @@
-
 using Microsoft.EntityFrameworkCore;
 using QLbansach_tutorial.Models;
 using QLbansach_tutorial.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +15,26 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 builder.Services.AddScoped<INhaxuatbanService, NhaxuatbanService>();
 builder.Services.AddScoped<IChudeService, ChudeService>();
 builder.Services.AddScoped<ISachService, SachService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Add authentication services
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Auth";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Home/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(7);
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Admin"));
+    options.AddPolicy("UserOnly", policy => policy.RequireClaim("User"));
+});
+
+// Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -31,6 +51,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Add authentication middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

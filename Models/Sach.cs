@@ -25,7 +25,7 @@ public partial class Sach
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-    public virtual ICollection<Chitietdondathang> Chitietdondathangs { get; set; } = new List<Chitietdondathang>();
+    public virtual ICollection<Chitietdonhang> Chitietdonhangs { get; set; } = new List<Chitietdonhang>();
 
     public virtual Chude? MaCdNavigation { get; set; }
 

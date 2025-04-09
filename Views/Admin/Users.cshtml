@@ -1,0 +1,65 @@
+@model IEnumerable<QLbansach_tutorial.Models.Khachhang>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid py-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Danh sách người dùng</h5>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Thêm người dùng
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Tài khoản</th>
+                            <th>Điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Tác vụ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.MaKh</td>
+                                <td>@user.HoTen</td>
+                                <td>@user.Email</td>
+                                <td>@user.Taikhoan</td>
+                                <td>@user.DienthoaiKh</td>
+                                <td>
+                                    @if (user.IdQuyen == 1)
+                                    {
+                                        <span class="badge bg-danger">Admin</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info">Khách hàng</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

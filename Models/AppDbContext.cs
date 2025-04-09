@@ -17,7 +17,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Cart> Carts { get; set; }
 
-    public virtual DbSet<Chitietdondathang> Chitietdondathangs { get; set; }
+    public virtual DbSet<Chitietdonhang> Chitietdonhangs { get; set; }
 
     public virtual DbSet<Chude> Chudes { get; set; }
 
@@ -43,7 +43,7 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Cart__3213E83F5633DAEF");
+            entity.HasKey(e => e.Id).HasName("PK__Cart__3213E83F70FB8552");
 
             entity.ToTable("Cart");
 
@@ -51,7 +51,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Gia)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("gia");
-            entity.Property(e => e.MaKh).HasColumnName("maKH");
+            entity.Property(e => e.MaKh).HasColumnName("MaKH");
             entity.Property(e => e.MaSach).HasColumnName("ma_sach");
             entity.Property(e => e.Sl).HasColumnName("sl");
             entity.Property(e => e.Tongtien)
@@ -60,35 +60,35 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.MaKh)
-                .HasConstraintName("FK__Cart__maKH__440B1D61");
+                .HasConstraintName("FK__Cart__MaKH__4AB81AF0");
 
             entity.HasOne(d => d.MaSachNavigation).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.MaSach)
-                .HasConstraintName("FK__Cart__ma_sach__44FF419A");
+                .HasConstraintName("FK__Cart__ma_sach__4BAC3F29");
         });
 
-        modelBuilder.Entity<Chitietdondathang>(entity =>
+        modelBuilder.Entity<Chitietdonhang>(entity =>
         {
-            entity.HasKey(e => new { e.MaDonHang, e.Masach }).HasName("PK__CHITIETD__8B6CA765E7F6A286");
+            entity.HasKey(e => new { e.MaDonHang, e.Masach }).HasName("PK__CHITIETD__8B6CA765255F1F5F");
 
-            entity.ToTable("CHITIETDONDATHANG");
+            entity.ToTable("CHITIETDONHANG");
 
             entity.Property(e => e.Soluong).HasColumnName("soluong");
 
-            entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.Chitietdondathangs)
+            entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.Chitietdonhangs)
                 .HasForeignKey(d => d.MaDonHang)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CHITIETDO__MaDon__4AB81AF0");
+                .HasConstraintName("FK__CHITIETDO__MaDon__46E78A0C");
 
-            entity.HasOne(d => d.MasachNavigation).WithMany(p => p.Chitietdondathangs)
+            entity.HasOne(d => d.MasachNavigation).WithMany(p => p.Chitietdonhangs)
                 .HasForeignKey(d => d.Masach)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CHITIETDO__Masac__4BAC3F29");
+                .HasConstraintName("FK__CHITIETDO__Masac__47DBAE45");
         });
 
         modelBuilder.Entity<Chude>(entity =>
         {
-            entity.HasKey(e => e.MaCd).HasName("PK__CHUDE__27258E04BF620F66");
+            entity.HasKey(e => e.MaCd).HasName("PK__CHUDE__27258E04D1C8E9F1");
 
             entity.ToTable("CHUDE");
 
@@ -98,26 +98,25 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Dondathang>(entity =>
         {
-            entity.HasKey(e => e.MaDonHang).HasName("PK__DONDATHA__129584ADD2657F76");
+            entity.HasKey(e => e.MaDonHang).HasName("PK__DONDATHA__129584AD382ED6A0");
 
             entity.ToTable("DONDATHANG");
 
             entity.Property(e => e.MaKh).HasColumnName("maKH");
-            entity.Property(e => e.Ngaygiao).HasColumnName("ngaygiao");
             entity.Property(e => e.Tinhtranggiaohang).HasMaxLength(50);
 
             entity.HasOne(d => d.MaKhNavigation).WithMany(p => p.Dondathangs)
                 .HasForeignKey(d => d.MaKh)
-                .HasConstraintName("FK__DONDATHANG__maKH__47DBAE45");
+                .HasConstraintName("FK__DONDATHANG__maKH__403A8C7D");
         });
 
         modelBuilder.Entity<Khachhang>(entity =>
         {
-            entity.HasKey(e => e.MaKh).HasName("PK__KHACHHAN__7A3ECFE46A6FD233");
+            entity.HasKey(e => e.MaKh).HasName("PK__KHACHHAN__2725CF1EF0CCD139");
 
             entity.ToTable("KHACHHANG");
 
-            entity.Property(e => e.MaKh).HasColumnName("maKH");
+            entity.Property(e => e.MaKh).HasColumnName("MaKH");
             entity.Property(e => e.DiachiKh)
                 .HasMaxLength(200)
                 .HasColumnName("DiachiKH");
@@ -127,7 +126,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.HoTen).HasMaxLength(100);
             entity.Property(e => e.IdQuyen).HasColumnName("idQuyen");
-            entity.Property(e => e.Matkhau).HasMaxLength(50);
+            entity.Property(e => e.Matkhau).HasMaxLength(200);
             entity.Property(e => e.Taikhoan).HasMaxLength(50);
 
             entity.HasOne(d => d.IdQuyenNavigation).WithMany(p => p.Khachhangs)
@@ -137,7 +136,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Nhaxuatban>(entity =>
         {
-            entity.HasKey(e => e.MaNxb).HasName("PK__NHAXUATB__3A19482C6CB8DBB8");
+            entity.HasKey(e => e.MaNxb).HasName("PK__NHAXUATB__3A19482C84F2F730");
 
             entity.ToTable("NHAXUATBAN");
 
@@ -151,7 +150,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3213E83F6FD4BC76");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3213E83FFFBB9132");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.TenQuyen).HasMaxLength(50);
@@ -159,7 +158,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Sach>(entity =>
         {
-            entity.HasKey(e => e.Masach).HasName("PK__SACH__9F923C88D3F6BACD");
+            entity.HasKey(e => e.Masach).HasName("PK__SACH__9F923C88B6DD4F17");
 
             entity.ToTable("SACH");
 
@@ -173,16 +172,16 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.MaCdNavigation).WithMany(p => p.Saches)
                 .HasForeignKey(d => d.MaCd)
-                .HasConstraintName("FK__SACH__MaCD__403A8C7D");
+                .HasConstraintName("FK__SACH__MaCD__4316F928");
 
             entity.HasOne(d => d.MaNxbNavigation).WithMany(p => p.Saches)
                 .HasForeignKey(d => d.MaNxb)
-                .HasConstraintName("FK__SACH__MaNXB__412EB0B6");
+                .HasConstraintName("FK__SACH__MaNXB__440B1D61");
         });
 
         modelBuilder.Entity<Tacgium>(entity =>
         {
-            entity.HasKey(e => e.MaTg).HasName("PK__TACGIA__272500744B349F63");
+            entity.HasKey(e => e.MaTg).HasName("PK__TACGIA__272500743E8554FD");
 
             entity.ToTable("TACGIA");
 
@@ -197,7 +196,7 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Vietsac>(entity =>
         {
-            entity.HasKey(e => new { e.MaTg, e.Masach }).HasName("PK__VIETSAC__BEDC23BCC49286DC");
+            entity.HasKey(e => new { e.MaTg, e.Masach }).HasName("PK__VIETSAC__BEDC23BC43D9DFF6");
 
             entity.ToTable("VIETSAC");
 
@@ -205,7 +204,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Vaitro)
                 .HasMaxLength(50)
                 .HasColumnName("vaitro");
-            entity.Property(e => e.Vitri).HasMaxLength(50);
+            entity.Property(e => e.Vitri)
+                .HasMaxLength(50)
+                .HasColumnName("vitri");
 
             entity.HasOne(d => d.MaTgNavigation).WithMany(p => p.Vietsacs)
                 .HasForeignKey(d => d.MaTg)
