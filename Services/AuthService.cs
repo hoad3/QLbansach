@@ -113,6 +113,7 @@ public class AuthService : IAuthService
             // Thêm vào database
             await _context.Khachhangs.AddAsync(khachhang);
             await _context.SaveChangesAsync();
+            
 
             return true;
         }
@@ -121,5 +122,4 @@ public class AuthService : IAuthService
             return false;
         }
     }
-    
 }

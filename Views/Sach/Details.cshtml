@@ -2,7 +2,9 @@
 @{
     ViewData["Title"] = Model.Tensach;
 }
-
+@section Scripts {
+<script src="/js/addToCart.js"></script>
+}
 <section class="py-5">
     <div class="container">
         <nav aria-label="breadcrumb">
@@ -63,7 +65,7 @@
                     </div>
                     
                     <div class="product-actions">
-                        <button class="btn btn-primary btn-lg add-to-cart">
+                        <button class="btn btn-primary btn-lg add-to-cart" data-book-id="@Model.Masach">
                             <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
                         </button>
                     </div>
@@ -111,28 +113,3 @@
     </div>
 </section>
 
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Xử lý nút tăng giảm số lượng
-            $('#increase-quantity').click(function() {
-                var quantity = parseInt($('#quantity').val());
-                $('#quantity').val(quantity + 1);
-            });
-            
-            $('#decrease-quantity').click(function() {
-                var quantity = parseInt($('#quantity').val());
-                if (quantity > 1) {
-                    $('#quantity').val(quantity - 1);
-                }
-            });
-            
-            // Xử lý nút thêm vào giỏ hàng
-            $('.add-to-cart').click(function() {
-                var quantity = parseInt($('#quantity').val());
-                alert('Đã thêm ' + quantity + ' sản phẩm vào giỏ hàng');
-                // Thêm code xử lý thêm vào giỏ hàng ở đây
-            });
-        });
-    </script>
-}

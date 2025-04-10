@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using QLbansach_tutorial.Models;
 using QLbansach_tutorial.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using QLbansach_tutorial.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddScoped<INhaxuatbanService, NhaxuatbanService>();
 builder.Services.AddScoped<IChudeService, ChudeService>();
 builder.Services.AddScoped<ISachService, SachService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 // Add authentication services
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -26,6 +28,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Home/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(7);
     });
+
+
+builder.Services.AddScoped<CartCountFilter>();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<CartCountFilter>();
+});
 
 builder.Services.AddAuthorization(options =>
 {

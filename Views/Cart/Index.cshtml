@@ -1,0 +1,91 @@
+@model List<QLbansach_tutorial.Models.Cart>
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+@section Scripts {
+<script src="js/Cart.js"></script>
+}
+<div class="container mt-4">
+    <h2>Giỏ hàng của bạn</h2>
+    
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            Giỏ hàng của bạn đang trống. <a href="/">Tiếp tục mua sắm</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="@item.MaSachNavigation.Anhbia" alt="@item.MaSachNavigation.Tensach" 
+                                         class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                    <div class="ms-3">
+                                        <h5 class="mb-0">@item.MaSachNavigation.Tensach</h5>
+                                        <small class="text-muted">@item.MaSachNavigation.Masach</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.Gia?.ToString("N0") đ</td>
+                            <td>
+                                <div class="input-group" style="width: 120px;">
+                                    <button class="btn btn-outline-secondary decrease-quantity" 
+                                            data-book-id="@item.MaSach">-</button>
+                                    <input type="number" class="form-control text-center quantity-input" 
+                                           value="@item.Sl" min="1" data-book-id="@item.MaSach">
+                                    <button class="btn btn-outline-secondary increase-quantity" 
+                                            data-book-id="@item.MaSach">+</button>
+                                </div>
+                            </td>
+                            <td>@item.Tongtien?.ToString("N0") đ</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm remove-item" 
+                                        data-book-id="@item.MaSach">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                        <td><strong>@ViewBag.Total.ToString("N0") đ</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
+            </a>
+            <div>
+                <button class="btn btn-danger me-2" id="clear-cart">
+                    <i class="fas fa-trash"></i> Xóa giỏ hàng
+                </button>
+                <a href="/Checkout" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i> Thanh toán
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
