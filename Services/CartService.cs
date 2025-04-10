@@ -24,12 +24,20 @@ public class CartService : ICartService
     {
         try
         {
+            var book = await _context.Saches.FindAsync(bookId);
+            if (book == null) return false;
+
             var existingItem = await _context.Carts
                 .FirstOrDefaultAsync(c => c.MaKh == userId && c.MaSach == bookId);
+
+            decimal price = book.Giaban ?? 0m;
+            decimal total = price * quantity;
 
             if (existingItem != null)
             {
                 existingItem.Sl += quantity;
+                existingItem.Gia = price;
+                existingItem.Tongtien = existingItem.Sl * price;
             }
             else
             {
@@ -37,7 +45,9 @@ public class CartService : ICartService
                 {
                     MaKh = userId,
                     MaSach = bookId,
-                    Sl = quantity
+                    Sl = quantity,
+                    Gia = price,
+                    Tongtien = total
                 };
                 _context.Carts.Add(newItem);
             }
@@ -56,11 +66,15 @@ public class CartService : ICartService
         try
         {
             var item = await _context.Carts
+                .Include(c => c.MaSachNavigation)
                 .FirstOrDefaultAsync(c => c.MaKh == userId && c.MaSach == bookId);
 
             if (item != null)
             {
+                decimal price = item.MaSachNavigation.Giaban ?? 0m;
                 item.Sl = quantity;
+                item.Gia = price;
+                item.Tongtien = quantity * price;
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -111,12 +125,17 @@ public class CartService : ICartService
         }
     }
     
-    
     public async Task<decimal> CalculateTotal(int userId)
     {
-        var total = await _context.Carts
-            .Where(c => c.MaKh == userId)
-            .SumAsync(c => c.Tongtien ?? 0);
+        var cartItems = await GetCartItemsAsync(userId);
+        decimal total = 0m;
+        
+        foreach (var item in cartItems)
+        {
+            decimal price = item.MaSachNavigation?.Giaban ?? 0m;
+            total += price * (item.Sl ?? 0m);
+        }
+        
         return total;
     }
 } 
