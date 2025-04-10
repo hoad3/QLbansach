@@ -12,112 +12,106 @@ public class CartService : ICartService
         _context = context;
     }
 
-    public async Task<Cart?> GetCartByUserId(int userId)
+    public async Task<IEnumerable<Cart>> GetCartItemsAsync(int userId)
     {
         return await _context.Carts
             .Include(c => c.MaSachNavigation)
-            .FirstOrDefaultAsync(c => c.MaKh == userId);
+            .Where(c => c.MaKh == userId)
+            .ToListAsync();
     }
-
-    public async Task<bool> AddToCart(int userId, int bookId, int quantity = 1)
+    
+    public async Task<bool> AddToCartAsync(int userId, int bookId, int quantity = 1)
     {
         try
         {
-            // Kiểm tra sách có tồn tại không
-            var sach = await _context.Saches.FindAsync(bookId);
-            if (sach == null) return false;
-
-            // Kiểm tra giỏ hàng đã tồn tại chưa
-            var existingCart = await _context.Carts
+            var existingItem = await _context.Carts
                 .FirstOrDefaultAsync(c => c.MaKh == userId && c.MaSach == bookId);
 
-            if (existingCart != null)
+            if (existingItem != null)
             {
-                // Nếu đã tồn tại, cập nhật số lượng và tổng tiền
-                existingCart.Sl += quantity;
-                existingCart.Tongtien = existingCart.Sl * sach.Giaban;
+                existingItem.Sl += quantity;
             }
             else
             {
-                var cart = new Cart
+                var newItem = new Cart
                 {
                     MaKh = userId,
                     MaSach = bookId,
-                    Sl = quantity,
-                    Gia = sach.Giaban,
-                    Tongtien = quantity * sach.Giaban
+                    Sl = quantity
                 };
-                _context.Carts.Add(cart);
+                _context.Carts.Add(newItem);
             }
 
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
     }
 
-    public async Task<bool> UpdateCartItemQuantity(int userId, int bookId, int quantity)
+    public async Task<bool> UpdateCartItemAsync(int userId, int bookId, int quantity)
     {
         try
         {
-            var cart = await _context.Carts
-                .Include(c => c.MaSachNavigation)
+            var item = await _context.Carts
                 .FirstOrDefaultAsync(c => c.MaKh == userId && c.MaSach == bookId);
 
-            if (cart == null) return false;
-
-            cart.Sl = quantity;
-            cart.Tongtien = quantity * cart.MaSachNavigation.Giaban;
-
-            await _context.SaveChangesAsync();
-            return true;
+            if (item != null)
+            {
+                item.Sl = quantity;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
     }
 
-    public async Task<bool> RemoveFromCart(int userId, int bookId)
+    public async Task<bool> RemoveFromCartAsync(int userId, int bookId)
     {
         try
         {
-            var cart = await _context.Carts
+            var item = await _context.Carts
                 .FirstOrDefaultAsync(c => c.MaKh == userId && c.MaSach == bookId);
 
-            if (cart == null) return false;
-
-            _context.Carts.Remove(cart);
-            await _context.SaveChangesAsync();
-            return true;
+            if (item != null)
+            {
+                _context.Carts.Remove(item);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
     }
 
-    public async Task<bool> ClearCart(int userId)
+    public async Task<bool> ClearCartAsync(int userId)
     {
         try
         {
-            var cartItems = await _context.Carts
+            var items = await _context.Carts
                 .Where(c => c.MaKh == userId)
                 .ToListAsync();
 
-            _context.Carts.RemoveRange(cartItems);
+            _context.Carts.RemoveRange(items);
             await _context.SaveChangesAsync();
             return true;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
     }
-
+    
+    
     public async Task<decimal> CalculateTotal(int userId)
     {
         var total = await _context.Carts

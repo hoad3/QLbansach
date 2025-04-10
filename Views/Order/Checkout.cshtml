@@ -1,0 +1,89 @@
+@model IEnumerable<QLbansach_tutorial.Models.Cart>
+
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Thông tin đơn hàng</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.MaSachNavigation?.Tensach</td>
+                                    <td>@string.Format("{0:N0}", item.Gia) đ</td>
+                                    <td>@item.Sl</td>
+                                    <td>@string.Format("{0:N0}", item.Tongtien) đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Tổng cộng</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tạm tính:</span>
+                        <span>@string.Format("{0:N0}", ViewBag.Total) đ</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Phí vận chuyển:</span>
+                        <span>0 đ</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Tổng cộng:</strong>
+                        <strong>@string.Format("{0:N0}", ViewBag.Total) đ</strong>
+                    </div>
+                    <button id="placeOrder" class="btn btn-primary btn-lg w-100">
+                        Đặt hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#placeOrder').on('click', function() {
+                $.ajax({
+                    url: '/Order/PlaceOrder',
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Đặt hàng thành công! Mã đơn hàng: ' + response.orderId);
+                            window.location.href = '/Order/OrderHistory';
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi đặt hàng');
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi đặt hàng');
+                    }
+                });
+            });
+        });
+    </script>
+} 

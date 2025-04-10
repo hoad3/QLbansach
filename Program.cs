@@ -18,6 +18,7 @@ builder.Services.AddScoped<IChudeService, ChudeService>();
 builder.Services.AddScoped<ISachService, SachService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 // Add authentication services
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

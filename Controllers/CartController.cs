@@ -45,7 +45,7 @@ public class CartController : Controller
             }
 
             var userId = int.Parse(User.FindFirstValue("AccountId"));
-            var success = await _cartService.AddToCart(userId, bookId, quantity);
+            var success = await _cartService.AddToCartAsync(userId, bookId, quantity);
             
             if (success)
             {
@@ -68,7 +68,7 @@ public class CartController : Controller
         }
 
         var userId = int.Parse(User.FindFirstValue("AccountId"));
-        var success = await _cartService.UpdateCartItemQuantity(userId, bookId, quantity);
+        var success = await _cartService.UpdateCartItemAsync(userId, bookId, quantity);
         if (success)
         {
             return Json(new { success = true });
@@ -85,7 +85,7 @@ public class CartController : Controller
         }
 
         var userId = int.Parse(User.FindFirstValue("AccountId"));
-        var success = await _cartService.RemoveFromCart(userId, bookId);
+        var success = await _cartService.RemoveFromCartAsync(userId, bookId);
         if (success)
         {
             return Json(new { success = true });
@@ -102,7 +102,7 @@ public class CartController : Controller
         }
 
         var userId = int.Parse(User.FindFirstValue("AccountId"));
-        var success = await _cartService.ClearCart(userId);
+        var success = await _cartService.ClearCartAsync(userId);
         if (success)
         {
             return Json(new { success = true });

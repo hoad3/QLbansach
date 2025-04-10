@@ -1,19 +1,18 @@
-@model List<QLbansach_tutorial.Models.Cart>
+@model IEnumerable<QLbansach_tutorial.Models.Cart>
 
 @{
     ViewData["Title"] = "Giỏ hàng";
 }
-@section Scripts {
-<script src="js/Cart.js"></script>
-}
-<div class="container mt-4">
-    <h2>Giỏ hàng của bạn</h2>
+
+<div class="container py-5">
+    <h2 class="mb-4">Giỏ hàng</h2>
     
-    @if (Model == null || !Model.Any())
+    @if (!Model.Any())
     {
         <div class="alert alert-info">
-            Giỏ hàng của bạn đang trống. <a href="/">Tiếp tục mua sắm</a>
+            Giỏ hàng của bạn đang trống.
         </div>
+        <a href="/Sach" class="btn btn-primary">Tiếp tục mua sắm</a>
     }
     else
     {
@@ -22,10 +21,10 @@
                 <thead>
                     <tr>
                         <th>Sản phẩm</th>
-                        <th>Giá</th>
+                        <th>Đơn giá</th>
                         <th>Số lượng</th>
-                        <th>Tổng</th>
-                        <th></th>
+                        <th>Thành tiền</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,30 +33,33 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="@item.MaSachNavigation.Anhbia" alt="@item.MaSachNavigation.Tensach" 
-                                         class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-                                    <div class="ms-3">
-                                        <h5 class="mb-0">@item.MaSachNavigation.Tensach</h5>
-                                        <small class="text-muted">@item.MaSachNavigation.Masach</small>
+                                    <img src="@item.MaSachNavigation?.Anhbia" alt="@item.MaSachNavigation?.Tensach" 
+                                         class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                                    <div class="ml-3">
+                                        <h6 class="mb-0">@item.MaSachNavigation?.Tensach</h6>
+                                        <small class="text-muted">@item.MaSachNavigation?.Masach</small>
                                     </div>
                                 </div>
                             </td>
-                            <td>@item.Gia?.ToString("N0") đ</td>
+                            <td>@string.Format("{0:N0}", item.Gia) đ</td>
                             <td>
-                                <div class="input-group" style="width: 120px;">
-                                    <button class="btn btn-outline-secondary decrease-quantity" 
-                                            data-book-id="@item.MaSach">-</button>
-                                    <input type="number" class="form-control text-center quantity-input" 
-                                           value="@item.Sl" min="1" data-book-id="@item.MaSach">
-                                    <button class="btn btn-outline-secondary increase-quantity" 
-                                            data-book-id="@item.MaSach">+</button>
+                                <div class="input-group" style="max-width: 150px;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary decrease-quantity" type="button" 
+                                                data-book-id="@item.MaSach">-</button>
+                                    </div>
+                                    <input type="text" class="form-control text-center quantity" 
+                                           value="@item.Sl" data-book-id="@item.MaSach">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary increase-quantity" type="button" 
+                                                data-book-id="@item.MaSach">+</button>
+                                    </div>
                                 </div>
                             </td>
-                            <td>@item.Tongtien?.ToString("N0") đ</td>
+                            <td>@string.Format("{0:N0}", item.Tongtien) đ</td>
                             <td>
-                                <button class="btn btn-danger btn-sm remove-item" 
-                                        data-book-id="@item.MaSach">
-                                    <i class="fas fa-trash"></i>
+                                <button class="btn btn-danger btn-sm remove-item" data-book-id="@item.MaSach">
+                                    <i class="fa fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
@@ -65,8 +67,8 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
-                        <td><strong>@ViewBag.Total.ToString("N0") đ</strong></td>
+                        <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
+                        <td><strong>@string.Format("{0:N0}", ViewBag.Total) đ</strong></td>
                         <td></td>
                     </tr>
                 </tfoot>
@@ -74,18 +76,76 @@
         </div>
 
         <div class="d-flex justify-content-between mt-4">
-            <a href="/" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
-            </a>
-            <div>
-                <button class="btn btn-danger me-2" id="clear-cart">
-                    <i class="fas fa-trash"></i> Xóa giỏ hàng
-                </button>
-                <a href="/Checkout" class="btn btn-primary">
-                    <i class="fas fa-shopping-cart"></i> Thanh toán
-                </a>
-            </div>
+            <a href="/Sach" class="btn btn-outline-primary">Tiếp tục mua sắm</a>
+            <a href="/Order/Checkout" class="btn btn-primary">Thanh toán</a>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Xử lý tăng số lượng
+            $('.increase-quantity').on('click', function() {
+                const bookId = $(this).data('book-id');
+                const input = $(`input.quantity[data-book-id="${bookId}"]`);
+                const currentValue = parseInt(input.val());
+                input.val(currentValue + 1);
+                updateQuantity(bookId, currentValue + 1);
+            });
+
+            // Xử lý giảm số lượng
+            $('.decrease-quantity').on('click', function() {
+                const bookId = $(this).data('book-id');
+                const input = $(`input.quantity[data-book-id="${bookId}"]`);
+                const currentValue = parseInt(input.val());
+                if (currentValue > 1) {
+                    input.val(currentValue - 1);
+                    updateQuantity(bookId, currentValue - 1);
+                }
+            });
+
+            // Xử lý xóa sản phẩm
+            $('.remove-item').on('click', function() {
+                const bookId = $(this).data('book-id');
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                    $.ajax({
+                        url: '/Cart/RemoveItem',
+                        type: 'POST',
+                        data: { bookId: bookId },
+                        success: function(response) {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                alert(response.message || 'Có lỗi xảy ra khi xóa sản phẩm');
+                            }
+                        },
+                        error: function() {
+                            alert('Có lỗi xảy ra khi xóa sản phẩm');
+                        }
+                    });
+                }
+            });
+
+            // Cập nhật số lượng
+            function updateQuantity(bookId, quantity) {
+                $.ajax({
+                    url: '/Cart/UpdateQuantity',
+                    type: 'POST',
+                    data: { bookId: bookId, quantity: quantity },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi cập nhật số lượng');
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi cập nhật số lượng');
+                    }
+                });
+            }
+        });
+    </script>
+}
 
