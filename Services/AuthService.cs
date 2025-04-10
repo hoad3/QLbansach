@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using QLbansach_tutorial.Helpers;
+using BCrypt.Net;
 
 namespace QLbansach_tutorial.Services;
 
@@ -95,10 +96,8 @@ public class AuthService : IAuthService
                 return false;
             }
 
-            // Mã hóa mật khẩu
             string hashedPassword = Helper.hashpassword(model.Password);
 
-            // Tạo khách hàng mới
             var khachhang = new Khachhang
             {
                 HoTen = model.HoTen,
@@ -107,8 +106,8 @@ public class AuthService : IAuthService
                 Email = model.Email,
                 DiachiKh = model.DiachiKH,
                 DienthoaiKh = model.DienthoaiKH,
-                NgaySinh = model.Ngaysinh,
-                IdQuyen = 2 // Quyền mặc định là User (IdQuyen = 2)
+                NgaySinh = new DateOnly(model.Nam, model.Thang, model.Ngay),
+                IdQuyen = 2 
             };
 
             // Thêm vào database

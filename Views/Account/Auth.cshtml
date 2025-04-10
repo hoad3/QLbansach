@@ -199,6 +199,38 @@
                                         <input type="tel" class="form-control" id="dienthoaiKH" name="DienthoaiKH" 
                                             placeholder="Điện thoại">
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Ngày sinh</label>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <select class="form-select" id="day" name="Ngay" required>
+                                                    <option value="">Ngày</option>
+                                                    @for (int i = 1; i <= 31; i++)
+                                                    {
+                                                        <option value="@i">@i</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-select" id="month" name="Thang" required>
+                                                    <option value="">Tháng</option>
+                                                    @for (int i = 1; i <= 12; i++)
+                                                    {
+                                                        <option value="@i">@i</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-4">
+                                                <select class="form-select" id="year" name="Nam" required>
+                                                    <option value="">Năm</option>
+                                                    @for (int i = DateTime.Now.Year - 18; i >= DateTime.Now.Year - 100; i--)
+                                                    {
+                                                        <option value="@i">@i</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary">Đăng ký</button>
                                     </div>

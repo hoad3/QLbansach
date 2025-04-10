@@ -25,8 +25,14 @@ public class Register
     public string? DiachiKH { get; set; }
     public string? DienthoaiKH { get; set; }
     
+    [Required(ErrorMessage = "Vui lòng chọn ngày")]
+    public int Ngay { get; set; }
     
-    [Required (ErrorMessage="Vui lòng nhập ngày sinh")]
+    [Required(ErrorMessage = "Vui lòng chọn tháng")]
+    public int Thang { get; set; }
+    
+    [Required(ErrorMessage = "Vui lòng chọn năm")]
+    public int Nam { get; set; }
+    
     public DateOnly Ngaysinh { get; set; }
-    
 }
