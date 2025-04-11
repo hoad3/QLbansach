@@ -1,0 +1,286 @@
+@model IEnumerable<QLbansach_tutorial.Models.Sach>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Quản lý sản phẩm</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/Admin">Dashboard</a></li>
+        <li class="breadcrumb-item active">Quản lý sản phẩm</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Danh sách sản phẩm
+            <button class="btn btn-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#addBookModal">
+                <i class="fas fa-plus"></i> Thêm sách
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>Mã sách</th>
+                            <th>Tên sách</th>
+                            <th>Giá bán</th>
+                            <th>Số lượng tồn</th>
+                            <th>Nhà xuất bản</th>
+                            <th>Chủ đề</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr data-book-id="@product.Masach">
+                                <td>@product.Masach</td>
+                                <td class="editable" data-field="Tensach">@product.Tensach</td>
+                                <td class="editable" data-field="Giaban">@string.Format("{0:N0} đ", product.Giaban)</td>
+                                <td class="editable" data-field="Soluongton">@product.Soluongton</td>
+                                <td class="editable" data-field="MaNxb" data-value="@product.MaNxb">@(product.MaNxbNavigation?.TenNxb ?? "Không xác định")</td>
+                                <td class="editable" data-field="MaCd" data-value="@product.MaCd">@(product.MaCdNavigation?.TenChuDe ?? "Không xác định")</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm edit-book" data-book-id="@product.Masach">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-book" data-book-id="@product.Masach">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm sách -->
+<div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBookModalLabel">Thêm sách mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addBookForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Tên sách</label>
+                        <input type="text" class="form-control" name="Tensach" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giá bán</label>
+                        <input type="number" class="form-control" name="Giaban" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số lượng tồn</label>
+                        <input type="number" class="form-control" name="Soluongton" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nhà xuất bản</label>
+                        <select class="form-control" name="MaNxb" required>
+                            <option value="">-- Chọn nhà xuất bản --</option>
+                            @foreach (var publisher in ViewBag.Publishers)
+                            {
+                                <option value="@publisher.MaNxb">@publisher.TenNxb</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Chủ đề</label>
+                        <select class="form-control" name="MaCd" required>
+                            <option value="">-- Chọn chủ đề --</option>
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category.MaCd">@category.TenChuDe</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" name="Mota"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ảnh bìa</label>
+                        <input type="file" class="form-control" name="Anhbia" accept="image/*" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveNewBook">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Khởi tạo DataTable
+            var table = $('#productsTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json'
+                },
+                // Tắt tính năng tự động xử lý sự kiện của DataTable
+                processing: false,
+                serverSide: false
+            });
+
+            // Xử lý sự kiện click vào nút sửa
+            $('#productsTable').on('click', '.edit-book', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                var row = $(this).closest('tr');
+                var bookId = row.data('book-id');
+                var button = $(this);
+                
+                // Lấy tất cả các ô có thể chỉnh sửa trong hàng
+                var editableCells = row.find('.editable');
+                
+                // Nếu đang trong chế độ chỉnh sửa, lưu thay đổi
+                if (row.hasClass('editing')) {
+                    var updates = {};
+                    editableCells.each(function() {
+                        var cell = $(this);
+                        var field = cell.data('field');
+                        var newValue = cell.find('input, select').val();
+                        updates[field] = newValue;
+                    });
+
+                    // Gửi request cập nhật
+                    $.ajax({
+                        url: '/Admin/UpdateBook',
+                        method: 'POST',
+                        data: {
+                            id: bookId,
+                            updates: updates
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Cập nhật lại giá trị hiển thị
+                                editableCells.each(function() {
+                                    var cell = $(this);
+                                    var field = cell.data('field');
+                                    var newValue = cell.find('input, select').val();
+                                    
+                                    if (field === 'MaNxb' || field === 'MaCd') {
+                                        cell.text(cell.find('select option:selected').text());
+                                        cell.data('value', newValue);
+                                    } else if (field === 'Giaban') {
+                                        cell.text(new Intl.NumberFormat('vi-VN').format(newValue) + ' đ');
+                                    } else {
+                                        cell.text(newValue);
+                                    }
+                                });
+                                
+                                // Thoát khỏi chế độ chỉnh sửa
+                                row.removeClass('editing');
+                                button.html('<i class="fas fa-edit"></i> Sửa');
+                            } else {
+                                alert('Có lỗi xảy ra: ' + response.message);
+                            }
+                        }
+                    });
+                } else {
+                    // Vào chế độ chỉnh sửa
+                    row.addClass('editing');
+                    button.html('<i class="fas fa-save"></i> Lưu');
+                    
+                    editableCells.each(function() {
+                        var cell = $(this);
+                        var currentValue = cell.text().trim();
+                        var field = cell.data('field');
+                        
+                        if (field === 'MaNxb' || field === 'MaCd') {
+                            var select = $('<select class="form-control">');
+                            if (field === 'MaNxb') {
+                                @foreach (var publisher in ViewBag.Publishers)
+                                {
+                                    <text>
+                                    select.append('<option value="@publisher.MaNxb">@publisher.TenNxb</option>');
+                                    </text>
+                                }
+                            } else {
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    <text>
+                                    select.append('<option value="@category.MaCd">@category.TenChuDe</option>');
+                                    </text>
+                                }
+                            }
+                            select.val(cell.data('value'));
+                            cell.html(select);
+                        } else if (field === 'Giaban') {
+                            var input = $('<input type="number" class="form-control">').val(currentValue.replace(/[^0-9]/g, ''));
+                            cell.html(input);
+                        } else {
+                            var input = $('<input type="text" class="form-control">').val(currentValue);
+                            cell.html(input);
+                        }
+                    });
+                }
+            });
+
+            // Xử lý sự kiện xóa sách
+            $('#productsTable').on('click', '.delete-book', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (confirm('Bạn có chắc chắn muốn xóa sách này?')) {
+                    var bookId = $(this).data('book-id');
+                    var row = $(this).closest('tr');
+                    $.ajax({
+                        url: '/Admin/DeleteBook',
+                        method: 'POST',
+                        data: { id: bookId },
+                        success: function(response) {
+                            if (response.success) {
+                                table.row(row).remove().draw();
+                                alert(response.message || 'Xóa sách thành công');
+                            } else {
+                                alert(response.message || 'Có lỗi xảy ra khi xóa sách');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Có lỗi xảy ra khi gửi yêu cầu xóa: ' + error);
+                        }
+                    });
+                }
+            });
+
+            // Xử lý thêm sách mới
+            $('#saveNewBook').click(function() {
+                var formData = new FormData($('#addBookForm')[0]);
+                $.ajax({
+                    url: '/Admin/CreateBook',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#addBookModal').modal('hide');
+                            location.reload();
+                        } else {
+                            alert('Có lỗi xảy ra: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Có lỗi xảy ra khi tải ảnh lên: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+} 

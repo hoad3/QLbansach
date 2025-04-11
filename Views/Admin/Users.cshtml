@@ -1,59 +1,50 @@
 @model IEnumerable<QLbansach_tutorial.Models.Khachhang>
+
 @{
     ViewData["Title"] = "Quản lý người dùng";
-    Layout = "_AdminLayout";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container-fluid py-4">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Danh sách người dùng</h5>
-            <button class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i> Thêm người dùng
-            </button>
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Quản lý người dùng</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/Admin">Dashboard</a></li>
+        <li class="breadcrumb-item active">Quản lý người dùng</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Danh sách người dùng
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-bordered" id="usersTable">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Mã KH</th>
                             <th>Họ tên</th>
                             <th>Email</th>
-                            <th>Tài khoản</th>
                             <th>Điện thoại</th>
-                            <th>Vai trò</th>
-                            <th>Tác vụ</th>
+                            <th>Địa chỉ</th>
+                            <th>Quyền</th>
+                            <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var user in Model)
                         {
-                            <tr>
+                            <tr data-user-id="@user.MaKh">
                                 <td>@user.MaKh</td>
-                                <td>@user.HoTen</td>
-                                <td>@user.Email</td>
-                                <td>@user.Taikhoan</td>
-                                <td>@user.DienthoaiKh</td>
+                                <td class="editable" data-field="HoTen">@user.HoTen</td>
+                                <td class="editable" data-field="Email">@user.Email</td>
+                                <td class="editable" data-field="DienthoaiKh">@user.DienthoaiKh</td>
+                                <td class="editable" data-field="DiachiKh">@user.DiachiKh</td>
+                                <td class="editable" data-field="IdQuyen" data-value="@user.IdQuyen">@(user.IdQuyenNavigation?.TenQuyen ?? "Không xác định")</td>
                                 <td>
-                                    @if (user.IdQuyen == 1)
-                                    {
-                                        <span class="badge bg-danger">Admin</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-info">Khách hàng</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
+                                    <button class="btn btn-danger btn-sm delete-user" data-user-id="@user.MaKh">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
                                 </td>
                             </tr>
                         }
@@ -62,4 +53,100 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Khởi tạo DataTable
+            var table = $('#usersTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json'
+                }
+            });
+
+            // Xử lý sự kiện click vào ô có thể chỉnh sửa
+            $('.editable').click(function() {
+                var cell = $(this);
+                var currentValue = cell.text().trim();
+                var field = cell.data('field');
+                var row = cell.closest('tr');
+                var userId = row.data('user-id');
+
+                if (field === 'IdQuyen') {
+                    // Hiển thị select cho quyền
+                    var select = $('<select class="form-control">');
+                    @foreach (var role in ViewBag.Roles)
+                    {
+                        <text>
+                        select.append('<option value="@role.Id">@role.TenQuyen</option>');
+                        </text>
+                    }
+                    cell.html(select);
+                    select.focus();
+                } else {
+                    // Hiển thị input cho các trường khác
+                    var input = $('<input type="text" class="form-control">').val(currentValue);
+                    cell.html(input);
+                    input.focus();
+                }
+
+                // Xử lý sự kiện khi mất focus
+                cell.find('input, select').blur(function() {
+                    var newValue = $(this).val();
+                    if (newValue !== currentValue) {
+                        // Gửi request cập nhật
+                        $.ajax({
+                            url: '/Admin/UpdateUserField',
+                            method: 'POST',
+                            data: {
+                                id: userId,
+                                field: field,
+                                value: newValue
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    if (field === 'IdQuyen') {
+                                        cell.text($(this).find('option:selected').text());
+                                        cell.data('value', newValue);
+                                    } else {
+                                        cell.text(newValue);
+                                    }
+                                } else {
+                                    alert('Có lỗi xảy ra: ' + response.message);
+                                    cell.text(currentValue);
+                                }
+                            },
+                            error: function() {
+                                alert('Có lỗi xảy ra khi cập nhật');
+                                cell.text(currentValue);
+                            }
+                        });
+                    } else {
+                        cell.text(currentValue);
+                    }
+                });
+            });
+
+            // Xử lý sự kiện xóa người dùng
+            $('.delete-user').click(function() {
+                if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+                    var userId = $(this).data('user-id');
+                    $.ajax({
+                        url: '/Admin/DeleteUser',
+                        method: 'POST',
+                        data: { id: userId },
+                        success: function(response) {
+                            if (response.success) {
+                                table.row($(this).closest('tr')).remove().draw();
+                                alert('Xóa người dùng thành công');
+                            } else {
+                                alert('Có lỗi xảy ra: ' + response.message);
+                            }
+                        }.bind(this)
+                    });
+                }
+            });
+        });
+    </script>
+} 

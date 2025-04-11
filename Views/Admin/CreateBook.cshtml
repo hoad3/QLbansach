@@ -1,0 +1,92 @@
+@model QLbansach_tutorial.Models.Sach
+
+@{
+    ViewData["Title"] = "Thêm sách mới";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Thêm sách mới</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/Admin">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/Admin/Products">Quản lý sản phẩm</a></li>
+        <li class="breadcrumb-item active">Thêm sách mới</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-plus me-1"></i>
+            Thông tin sách
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateBook" method="post">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mb-md-0">
+                            <input asp-for="Tensach" class="form-control" placeholder="Tên sách" />
+                            <label asp-for="Tensach">Tên sách</label>
+                            <span asp-validation-for="Tensach" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Giaban" class="form-control" placeholder="Giá bán" />
+                            <label asp-for="Giaban">Giá bán</label>
+                            <span asp-validation-for="Giaban" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mb-md-0">
+                            <input asp-for="Soluongton" class="form-control" placeholder="Số lượng tồn" />
+                            <label asp-for="Soluongton">Số lượng tồn</label>
+                            <span asp-validation-for="Soluongton" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="Anhbia" class="form-control" placeholder="Ảnh bìa" />
+                            <label asp-for="Anhbia">Ảnh bìa (URL)</label>
+                            <span asp-validation-for="Anhbia" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mb-md-0">
+                            <select asp-for="MaNxb" class="form-control" asp-items="@(new SelectList(ViewBag.Publishers, "MaNxb", "TenNxb"))">
+                                <option value="">-- Chọn nhà xuất bản --</option>
+                            </select>
+                            <label asp-for="MaNxb">Nhà xuất bản</label>
+                            <span asp-validation-for="MaNxb" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select asp-for="MaCd" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "MaCd", "TenChuDe"))">
+                                <option value="">-- Chọn chủ đề --</option>
+                            </select>
+                            <label asp-for="MaCd">Chủ đề</label>
+                            <span asp-validation-for="MaCd" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Mota" class="form-control" placeholder="Mô tả" style="height: 100px"></textarea>
+                    <label asp-for="Mota">Mô tả</label>
+                    <span asp-validation-for="Mota" class="text-danger"></span>
+                </div>
+                <div class="mt-4 mb-0">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-block">Thêm sách</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
