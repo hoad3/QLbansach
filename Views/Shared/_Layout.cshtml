@@ -62,7 +62,7 @@
                                         {
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-controller="#" asp-action="Index" class="dropdown-item">Quản trị</a>
+                                                <a asp-controller="Admin" asp-action="Index" class="dropdown-item">Quản trị</a>
                                             }
                                             <a asp-controller="Account" asp-action="Profile" class="dropdown-item">Thông tin tài khoản</a>
                                             <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Đăng xuất</a>

@@ -4,6 +4,7 @@ using QLbansach_tutorial.Helpers;
 using QLbansach_tutorial.Models;
 using QLbansach_tutorial.Services;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace QLbansach_tutorial.Controllers;
 
@@ -19,7 +20,12 @@ public class AdminController : Controller
     
     public IActionResult Index()
     {
-        return View();
+        var orders = _context.Dondathangs
+            .Include(o => o.Chitietdonhangs)
+                .ThenInclude(c => c.MasachNavigation)
+            .Include(o => o.MaKhNavigation)
+            .ToList();
+        return View(orders);
     }
     
     public IActionResult Users()
@@ -41,39 +47,5 @@ public class AdminController : Controller
         return View(orders);
     }
 
-    // [AllowAnonymous] 
-    // public async Task<IActionResult> SeedData()
-    // {
-    //     try
-    //     {
-    //         if (!_context.Quyens.Any())
-    //         {
-    //             _context.Roles.Add(new Quyen { IdQuyen = 1, TenQuyen = "Admin" });
-    //             
-    //             _context.Quyens.Add(new Quyen { IdQuyen = 2, TenQuyen = "User" });
-    //             
-    //             await _context.SaveChangesAsync();
-    //         }
-    //         
-    //         if (!_context.Khachhangs.Any(x => x.IdQuyen == 1))
-    //         {
-    //             _context.Khachhangs.Add(new Khachhang
-    //             {
-    //                 HoTen = "Administrator",
-    //                 Taikhoan = "admin",
-    //                 Matkhau = Helper.hashpassword("Admin@123"), 
-    //                 Email = "admin@example.com",
-    //                 IdQuyen = 1 
-    //             });
-    //             
-    //             await _context.SaveChangesAsync();
-    //         }
-    //         
-    //         return Content("Dữ liệu khởi tạo thành công!");
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return Content($"Lỗi khi khởi tạo dữ liệu: {ex.Message}");
-    //     }
-    // }
+    
 } 
