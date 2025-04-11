@@ -10,7 +10,9 @@ public partial class Chitietdonhang
     public int Masach { get; set; }
 
     public int? Soluong { get; set; }
-
+    
+    public string? sdt { get; set; }
+    public string? Diachi { get; set; }
     public virtual Dondathang MaDonHangNavigation { get; set; } = null!;
 
     public virtual Sach MasachNavigation { get; set; } = null!;

@@ -14,7 +14,7 @@ namespace QLbansach_tutorial.Services
             _cartService = cartService;
         }
 
-        public async Task<(bool success, string message, int? orderId)> PlaceOrderAsync(int userId)
+        public async Task<(bool success, string message, int? orderId)> PlaceOrderAsync(int userId, string phone, string address)
         {
             try
             {
@@ -39,14 +39,15 @@ namespace QLbansach_tutorial.Services
                 _context.Dondathangs.Add(order);
                 await _context.SaveChangesAsync();
 
-                // Thêm chi tiết đơn hàng
                 foreach (var item in cartItems)
                 {
                     var orderDetail = new Chitietdonhang
                     {
                         MaDonHang = order.MaDonHang,
                         Masach = item.MaSach.Value,
-                        Soluong = item.Sl
+                        Soluong = item.Sl,
+                        sdt = phone,
+                        Diachi = address
                     };
 
                     // Cập nhật số lượng tồn

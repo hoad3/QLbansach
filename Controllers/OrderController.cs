@@ -37,15 +37,20 @@ public class OrderController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> PlaceOrder()
+    public async Task<IActionResult> PlaceOrder(string phone, string address)
     {
         if (!User.Identity.IsAuthenticated)
         {
             return Json(new { success = false, message = "Vui lòng đăng nhập để đặt hàng" });
         }
 
+        if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(address))
+        {
+            return Json(new { success = false, message = "Vui lòng nhập đầy đủ thông tin giao hàng" });
+        }
+
         var userId = int.Parse(User.FindFirstValue("AccountId"));
-        var (success, message, orderId) = await _orderService.PlaceOrderAsync(userId);
+        var (success, message, orderId) = await _orderService.PlaceOrderAsync(userId, phone, address);
 
         return Json(new { success, message, orderId });
     }
