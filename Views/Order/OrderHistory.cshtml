@@ -20,7 +20,9 @@
                 <thead>
                     <tr>
                         <th>Mã đơn hàng</th>
+                        <th>Số điện thoại</th>
                         <th>Ngày đặt</th>
+                        <th>Địa chỉ</th>
                         <th>Trạng thái giao hàng</th>
                         <th>Thao tác</th>
                     </tr>
@@ -30,7 +32,9 @@
                     {
                         <tr>
                             <td>@order.MaDonHang</td>
+                            <td>@order.Chitietdonhangs.FirstOrDefault()?.sdt</td>
                             <td>@order.Ngatdat?.ToString("dd/MM/yyyy")</td>
+                            <td>@order.Chitietdonhangs.FirstOrDefault()?.Diachi</td>
                             <td>
                                 @if (order.Tinhtranggiaohang == "Đã giao hàng")
                                 {
