@@ -55,9 +55,26 @@
                         <strong>Tổng cộng:</strong>
                         <strong>@string.Format("{0:N0}", ViewBag.Total) đ</strong>
                     </div>
-                    <button id="placeOrder" class="btn btn-primary btn-lg w-100">
-                        Đặt hàng
-                    </button>
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["Error"]
+                        </div>
+                    }
+                    <div class="d-grid gap-2">
+                        <button id="placeOrder" class="btn btn-primary btn-lg">
+                            Thanh toán khi nhận hàng
+                        </button>
+                        
+                        <form id="frmCreateOrder" method="POST" asp-action="CreateVnPayPayment" asp-controller="Order">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="Name" value="@User.Identity.Name" />
+                            <input type="hidden" name="Amount" value="@ViewBag.Total" />
+                            <input type="hidden" name="OrderType" value="other" />
+                            <input type="hidden" name="OrderDescription" value="MotSach" />
+                            <button class="btn btn-danger btn-lg w-100" type="submit">Pay with Vnpay</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

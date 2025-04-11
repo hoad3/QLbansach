@@ -9,9 +9,11 @@ public class OrderController : Controller
 {
     private readonly IOrderService _orderService;
     private readonly ICartService _cartService;
+    private readonly IVnPayService _vnPayService;
 
-    public OrderController(IOrderService orderService, ICartService cartService)
+    public OrderController(IOrderService orderService, ICartService cartService, IVnPayService vnPayService)
     {
+        _vnPayService = vnPayService;
         _orderService = orderService;
         _cartService = cartService;
     }
@@ -79,5 +81,79 @@ public class OrderController : Controller
         }
 
         return View(order);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> PaymentCallbackVnpay()
+    {
+        var response = _vnPayService.PaymentExecute(Request.Query);
+        
+        if (response != null && response.VnPayResponseCode == "00")
+        {
+            // Thanh toán thành công, lưu thông tin đơn hàng
+            var userId = int.Parse(User.FindFirstValue("AccountId"));
+            var (success, message, orderId) = await _orderService.PlaceOrderAsync(userId);
+
+            if (success)
+            {
+                TempData["PaymentSuccess"] = true;
+                TempData["OrderId"] = orderId;
+                // TempData["Amount"] = response.Amount / 100; // Chuyển về đơn vị tiền tệ
+                TempData["PaymentDate"] = DateTime.Now;
+                TempData["TransactionId"] = response.TransactionId;
+                
+                return RedirectToAction("PaymentSuccess");
+            }
+        }
+
+        // Thanh toán thất bại hoặc có lỗi
+        // TempData["PaymentError"] = response?.Message ?? "Có lỗi xảy ra trong quá trình thanh toán";
+        return RedirectToAction("PaymentError");
+    }
+
+    public IActionResult PaymentSuccess()
+    {
+        if (TempData["PaymentSuccess"] == null)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+        return View();
+    }
+
+    public IActionResult PaymentError()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateVnPayPayment(PaymentInformationModel model)
+    {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return Json(new { success = false, message = "Vui lòng đăng nhập để thanh toán" });
+        }
+
+        try
+        {
+            if (model.Amount <= 0)
+            {
+                TempData["Error"] = "Số tiền thanh toán không hợp lệ";
+                return RedirectToAction("Checkout");
+            }
+            if (string.IsNullOrEmpty(model.OrderType) || string.IsNullOrEmpty(model.OrderDescription))
+            {
+                TempData["Error"] = "Thiếu thông tin thanh toán";
+                return RedirectToAction("Checkout");
+            }
+
+            var paymentUrl = _vnPayService.CreatePaymentUrl(model, HttpContext);
+            return Redirect(paymentUrl);
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = "Có lỗi xảy ra khi tạo URL thanh toán";
+            return RedirectToAction("Checkout");
+        }
     }
 } 
