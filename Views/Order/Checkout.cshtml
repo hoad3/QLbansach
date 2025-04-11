@@ -7,6 +7,24 @@
 <div class="container py-5">
     <div class="row">
         <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Thông tin giao hàng</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label for="phone" class="form-label">Số điện thoại</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" required
+                               pattern="[0-9]{10}" title="Vui lòng nhập số điện thoại 10 số"
+                               value="@ViewBag.UserPhone">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="address" class="form-label">Địa chỉ giao hàng</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" required
+                                  placeholder="Vui lòng nhập địa chỉ giao hàng chi tiết">@ViewBag.UserAddress</textarea>
+                    </div>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-header">
                     <h4>Thông tin đơn hàng</h4>
@@ -14,23 +32,23 @@
                 <div class="card-body">
                     <table class="table">
                         <thead>
-                            <tr>
-                                <th>Sản phẩm</th>
-                                <th>Đơn giá</th>
-                                <th>Số lượng</th>
-                                <th>Thành tiền</th>
-                            </tr>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>@item.MaSachNavigation?.Tensach</td>
-                                    <td>@string.Format("{0:N0}", item.Gia) đ</td>
-                                    <td>@item.Sl</td>
-                                    <td>@string.Format("{0:N0}", item.Tongtien) đ</td>
-                                </tr>
-                            }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.MaSachNavigation?.Tensach</td>
+                                <td>@string.Format("{0:N0}", item.Gia) đ</td>
+                                <td>@item.Sl</td>
+                                <td>@string.Format("{0:N0}", item.Tongtien) đ</td>
+                            </tr>
+                        }
                         </tbody>
                     </table>
                 </div>
@@ -72,6 +90,8 @@
                             <input type="hidden" name="Amount" value="@ViewBag.Total" />
                             <input type="hidden" name="OrderType" value="other" />
                             <input type="hidden" name="OrderDescription" value="MotSach" />
+                            <input type="hidden" name="Phone" id="vnpay_phone" />
+                            <input type="hidden" name="Address" id="vnpay_address" />
                             <button class="btn btn-danger btn-lg w-100" type="submit">Pay with Vnpay</button>
                         </form>
                     </div>
@@ -84,10 +104,36 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            function validateForm() {
+                var phone = $('#phone').val();
+                var address = $('#address').val();
+                
+                if (!phone || !address) {
+                    alert('Vui lòng nhập đầy đủ số điện thoại và địa chỉ giao hàng');
+                    return false;
+                }
+                
+                if (!/^[0-9]{10}$/.test(phone)) {
+                    alert('Số điện thoại không hợp lệ');
+                    return false;
+                }
+                
+                return true;
+            }
+
             $('#placeOrder').on('click', function() {
+                if (!validateForm()) return;
+
+                var phone = $('#phone').val();
+                var address = $('#address').val();
+
                 $.ajax({
                     url: '/Order/PlaceOrder',
                     type: 'POST',
+                    data: {
+                        phone: phone,
+                        address: address
+                    },
                     success: function(response) {
                         if (response.success) {
                             alert('Đặt hàng thành công! Mã đơn hàng: ' + response.orderId);
@@ -100,6 +146,17 @@
                         alert('Có lỗi xảy ra khi đặt hàng');
                     }
                 });
+            });
+
+            $('#frmCreateOrder').on('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateForm()) return;
+
+                $('#vnpay_phone').val($('#phone').val());
+                $('#vnpay_address').val($('#address').val());
+                
+                this.submit();
             });
         });
     </script>

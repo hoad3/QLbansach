@@ -39,15 +39,20 @@ public class OrderController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> PlaceOrder()
+    public async Task<IActionResult> PlaceOrder(string phone, string address)
     {
         if (!User.Identity.IsAuthenticated)
         {
             return Json(new { success = false, message = "Vui lòng đăng nhập để đặt hàng" });
         }
 
+        if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(address))
+        {
+            return Json(new { success = false, message = "Vui lòng nhập đầy đủ thông tin giao hàng" });
+        }
+
         var userId = int.Parse(User.FindFirstValue("AccountId"));
-        var (success, message, orderId) = await _orderService.PlaceOrderAsync(userId);
+        var (success, message, orderId) = await _orderService.PlaceOrderAsync(userId, phone, address);
 
         return Json(new { success, message, orderId });
     }
@@ -83,6 +88,48 @@ public class OrderController : Controller
         return View(order);
     }
     
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateVnPayPayment(PaymentInformationModel model, string phone, string address)
+    {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return Json(new { success = false, message = "Vui lòng đăng nhập để thanh toán" });
+        }
+
+        if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(address))
+        {
+            TempData["Error"] = "Vui lòng nhập đầy đủ thông tin giao hàng";
+            return RedirectToAction("Checkout");
+        }
+
+        try
+        {
+            if (model.Amount <= 0)
+            {
+                TempData["Error"] = "Số tiền thanh toán không hợp lệ";
+                return RedirectToAction("Checkout");
+            }
+            if (string.IsNullOrEmpty(model.OrderType) || string.IsNullOrEmpty(model.OrderDescription))
+            {
+                TempData["Error"] = "Thiếu thông tin thanh toán";
+                return RedirectToAction("Checkout");
+            }
+
+            // Lưu thông tin giao hàng vào TempData để sử dụng trong callback
+            TempData["DeliveryPhone"] = phone;
+            TempData["DeliveryAddress"] = address;
+
+            var paymentUrl = _vnPayService.CreatePaymentUrl(model, HttpContext);
+            return Redirect(paymentUrl);
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = "Có lỗi xảy ra khi tạo URL thanh toán";
+            return RedirectToAction("Checkout");
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult> PaymentCallbackVnpay()
     {
@@ -90,15 +137,24 @@ public class OrderController : Controller
         
         if (response != null && response.VnPayResponseCode == "00")
         {
-            // Thanh toán thành công, lưu thông tin đơn hàng
+            // Lấy lại thông tin giao hàng từ TempData
+            var phone = TempData["DeliveryPhone"]?.ToString();
+            var address = TempData["DeliveryAddress"]?.ToString();
+
+            if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(address))
+            {
+                TempData["PaymentError"] = "Không tìm thấy thông tin giao hàng";
+                return RedirectToAction("PaymentError");
+            }
+
             var userId = int.Parse(User.FindFirstValue("AccountId"));
-            var (success, message, orderId) = await _orderService.PlaceOrderAsync(userId);
+            var (success, message, orderId) = await _orderService.PlaceOrderAsync(userId, phone, address);
 
             if (success)
             {
                 TempData["PaymentSuccess"] = true;
                 TempData["OrderId"] = orderId;
-                // TempData["Amount"] = response.Amount / 100; // Chuyển về đơn vị tiền tệ
+                // TempData["Amount"] = response.Amount / 100;
                 TempData["PaymentDate"] = DateTime.Now;
                 TempData["TransactionId"] = response.TransactionId;
                 
@@ -106,7 +162,6 @@ public class OrderController : Controller
             }
         }
 
-        // Thanh toán thất bại hoặc có lỗi
         // TempData["PaymentError"] = response?.Message ?? "Có lỗi xảy ra trong quá trình thanh toán";
         return RedirectToAction("PaymentError");
     }
@@ -123,37 +178,5 @@ public class OrderController : Controller
     public IActionResult PaymentError()
     {
         return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult CreateVnPayPayment(PaymentInformationModel model)
-    {
-        if (!User.Identity.IsAuthenticated)
-        {
-            return Json(new { success = false, message = "Vui lòng đăng nhập để thanh toán" });
-        }
-
-        try
-        {
-            if (model.Amount <= 0)
-            {
-                TempData["Error"] = "Số tiền thanh toán không hợp lệ";
-                return RedirectToAction("Checkout");
-            }
-            if (string.IsNullOrEmpty(model.OrderType) || string.IsNullOrEmpty(model.OrderDescription))
-            {
-                TempData["Error"] = "Thiếu thông tin thanh toán";
-                return RedirectToAction("Checkout");
-            }
-
-            var paymentUrl = _vnPayService.CreatePaymentUrl(model, HttpContext);
-            return Redirect(paymentUrl);
-        }
-        catch (Exception ex)
-        {
-            TempData["Error"] = "Có lỗi xảy ra khi tạo URL thanh toán";
-            return RedirectToAction("Checkout");
-        }
     }
 } 

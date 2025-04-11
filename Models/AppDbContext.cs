@@ -74,7 +74,8 @@ public partial class AppDbContext : DbContext
             entity.ToTable("CHITIETDONHANG");
 
             entity.Property(e => e.Soluong).HasColumnName("soluong");
-
+            entity.Property(e => e.sdt).HasColumnName("sdt");
+            entity.Property(e => e.Diachi).HasColumnName("Diachi");
             entity.HasOne(d => d.MaDonHangNavigation).WithMany(p => p.Chitietdonhangs)
                 .HasForeignKey(d => d.MaDonHang)
                 .OnDelete(DeleteBehavior.ClientSetNull)

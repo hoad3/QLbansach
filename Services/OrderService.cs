@@ -14,7 +14,7 @@ namespace QLbansach_tutorial.Services
             _cartService = cartService;
         }
 
-        public async Task<(bool success, string message, int? orderId)> PlaceOrderAsync(int userId)
+         public async Task<(bool success, string message, int? orderId)> PlaceOrderAsync(int userId, string phone, string address)
         {
             try
             {
@@ -39,17 +39,16 @@ namespace QLbansach_tutorial.Services
                 _context.Dondathangs.Add(order);
                 await _context.SaveChangesAsync();
 
-                // Thêm chi tiết đơn hàng
                 foreach (var item in cartItems)
                 {
                     var orderDetail = new Chitietdonhang
                     {
                         MaDonHang = order.MaDonHang,
                         Masach = item.MaSach.Value,
-                        Soluong = item.Sl
+                        Soluong = item.Sl,
+                        sdt = phone,
+                        Diachi = address
                     };
-
-                    // Cập nhật số lượng tồn
                     var book = await _context.Saches.FindAsync(item.MaSach);
                     if (book != null)
                     {
@@ -62,8 +61,6 @@ namespace QLbansach_tutorial.Services
 
                     _context.Chitietdonhangs.Add(orderDetail);
                 }
-
-                // Xóa giỏ hàng
                 _context.Carts.RemoveRange(cartItems);
                 await _context.SaveChangesAsync();
 
@@ -74,6 +71,7 @@ namespace QLbansach_tutorial.Services
                 return (false, "Có lỗi xảy ra: " + ex.Message, null);
             }
         }
+
 
         public async Task<List<Dondathang>> GetOrderHistoryAsync(int userId)
         {
