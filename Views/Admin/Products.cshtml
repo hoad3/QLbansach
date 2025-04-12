@@ -126,17 +126,14 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Khởi tạo DataTable
             var table = $('#productsTable').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/vi.json'
                 },
-                // Tắt tính năng tự động xử lý sự kiện của DataTable
                 processing: false,
                 serverSide: false
             });
 
-            // Xử lý sự kiện click vào nút sửa
             $('#productsTable').on('click', '.edit-book', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -145,10 +142,8 @@
                 var bookId = row.data('book-id');
                 var button = $(this);
                 
-                // Lấy tất cả các ô có thể chỉnh sửa trong hàng
                 var editableCells = row.find('.editable');
                 
-                // Nếu đang trong chế độ chỉnh sửa, lưu thay đổi
                 if (row.hasClass('editing')) {
                     var updates = {};
                     editableCells.each(function() {
@@ -158,7 +153,6 @@
                         updates[field] = newValue;
                     });
 
-                    // Gửi request cập nhật
                     $.ajax({
                         url: '/Admin/UpdateBook',
                         method: 'POST',
@@ -168,7 +162,6 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                // Cập nhật lại giá trị hiển thị
                                 editableCells.each(function() {
                                     var cell = $(this);
                                     var field = cell.data('field');
@@ -184,7 +177,6 @@
                                     }
                                 });
                                 
-                                // Thoát khỏi chế độ chỉnh sửa
                                 row.removeClass('editing');
                                 button.html('<i class="fas fa-edit"></i> Sửa');
                             } else {
@@ -193,7 +185,6 @@
                         }
                     });
                 } else {
-                    // Vào chế độ chỉnh sửa
                     row.addClass('editing');
                     button.html('<i class="fas fa-save"></i> Lưu');
                     
@@ -232,7 +223,6 @@
                 }
             });
 
-            // Xử lý sự kiện xóa sách
             $('#productsTable').on('click', '.delete-book', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -259,7 +249,6 @@
                 }
             });
 
-            // Xử lý thêm sách mới
             $('#saveNewBook').click(function() {
                 var formData = new FormData($('#addBookForm')[0]);
                 $.ajax({
