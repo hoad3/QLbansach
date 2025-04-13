@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 64px;"></i>
+                    </div>
+                    <h2 class="card-title text-success mb-4">Thanh toán thành công!</h2>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-6 text-start">Mã đơn hàng:</div>
+                                <div class="col-sm-6 text-end"><strong>#@TempData["OrderId"]</strong></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 text-start">Số tiền:</div>
+                                <div class="col-sm-6 text-end"><strong>@string.Format("{0:N0}", TempData["Amount"]) đ</strong></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 text-start">Thời gian:</div>
+                                <div class="col-sm-6 text-end"><strong>@(((DateTime)TempData["PaymentDate"]).ToString("dd/MM/yyyy HH:mm:ss"))</strong></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-6 text-start">Mã giao dịch:</div>
+                                <div class="col-sm-6 text-end"><strong>@TempData["TransactionId"]</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-4">Cảm ơn bạn đã mua hàng tại MotSach!</p>
+                    <div class="d-grid gap-2">
+                        <a href="@Url.Action("OrderHistory", "Order")" class="btn btn-primary">Xem lịch sử đơn hàng</a>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary">Tiếp tục mua sắm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* @section Scripts { *@
+@*     <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script> *@
+@* }  *@

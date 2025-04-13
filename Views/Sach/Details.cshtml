@@ -1,0 +1,115 @@
+﻿@model QLbansach_tutorial.Models.Sach
+@{
+    ViewData["Title"] = Model.Tensach;
+}
+@section Scripts {
+<script src="/js/addToCart.js"></script>
+}
+<section class="py-5">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Sach" asp-action="Index">Nhà sách</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.Tensach</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="product-image-large">
+                    <img src="@Model.Anhbia" alt="@Model.Tensach" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="product-detail">
+                    <h1 class="product-title">@Model.Tensach</h1>
+                    
+                    <div class="product-meta">
+                        <span class="product-publisher">
+                            <strong>Nhà xuất bản:</strong> 
+                            <a asp-controller="Sach" asp-action="Index" asp-route-MaNXB="@Model.MaNxb">
+                                @Model.MaNxbNavigation?.TenNxb
+                            </a>
+                        </span>
+                        <span class="product-category ml-3">
+                            <strong>Chủ đề:</strong> 
+                            <a asp-controller="Sach" asp-action="Index" asp-route-MaCD="@Model.MaCd">
+                                @Model.MaCdNavigation?.TenChuDe
+                            </a>
+                        </span>
+                    </div>
+                    
+                    <div class="product-price my-4">
+                        <span class="price-amount">@string.Format("{0:N0}", Model.Giaban) đ</span>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Mota))
+                    {
+                        <div class="product-description">
+                            <h4>Mô tả:</h4>
+                            <p>@Model.Mota</p>
+                        </div>
+                    }
+                    
+                    <div class="product-quantity mt-4">
+                        <div class="input-group mb-3" style="max-width: 200px;">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button" id="decrease-quantity">-</button>
+                            </div>
+                            <input type="text" class="form-control text-center" id="quantity" value="1">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="increase-quantity">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-lg add-to-cart" data-book-id="@Model.Masach">
+                            <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                        </button>
+                    </div>
+                    
+                    <div class="product-stock mt-3">
+                        @if (Model.Soluongton > 0)
+                        {
+                            <span class="badge badge-success">Còn hàng (@Model.Soluongton)</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger">Hết hàng</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sách liên quan -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title mb-4">Sách liên quan</h2>
+        <div class="row">
+            @foreach (var relatedBook in ViewBag.RelatedBooks)
+            {
+                <div class="col-md-3">
+                    <div class="product-item">
+                        <figure class="product-style">
+                            <a asp-controller="Sach" asp-action="Details" asp-route-id="@relatedBook.Masach">
+                                <img src="@relatedBook.Anhbia" alt="@relatedBook.Tensach" class="product-item">
+                            </a>
+                            <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+                        </figure>
+                        <figcaption>
+                            <h3>@relatedBook.Tensach</h3>
+                            <span>@relatedBook.MaNxbNavigation?.TenNxb</span>
+                            <div class="item-price">@string.Format("{0:N0}", relatedBook.Giaban) đ</div>
+                        </figcaption>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+

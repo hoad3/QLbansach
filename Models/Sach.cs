@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace QLbansach_tutorial.Models;
+
+public partial class Sach
+{
+    public int Masach { get; set; }
+
+    public string? Tensach { get; set; }
+
+    public decimal? Giaban { get; set; }
+
+    public string? Mota { get; set; }
+
+    public string? Anhbia { get; set; }
+
+    public DateOnly? Ngaycapnhat { get; set; }
+
+    public int? Soluongton { get; set; }
+
+    public int? MaCd { get; set; }
+
+    public int? MaNxb { get; set; }
+
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
+    public virtual ICollection<Chitietdonhang> Chitietdonhangs { get; set; } = new List<Chitietdonhang>();
+
+    public virtual Chude? MaCdNavigation { get; set; }
+
+    public virtual Nhaxuatban? MaNxbNavigation { get; set; }
+
+    public virtual ICollection<Vietsac> Vietsacs { get; set; } = new List<Vietsac>();
+}

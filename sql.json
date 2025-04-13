@@ -1,0 +1,120 @@
+﻿create table CHUDE
+(
+MaCD     int identity
+primary key,
+TenChuDe nvarchar(100)
+)
+go
+
+create table NHAXUATBAN
+(
+MaNXB     int identity
+primary key,
+TenNXB    nvarchar(100),
+Diachi    nvarchar(200),
+Dienthoai nvarchar(20)
+)
+go
+
+create table Roles
+(
+id       int identity
+primary key,
+TenQuyen nvarchar(50)
+)
+go
+
+create table KHACHHANG
+(
+maKH        int identity
+primary key,
+HoTen       nvarchar(100),
+Taikhoan    nvarchar(50),
+Matkhau     nvarchar(50),
+Email       nvarchar(100),
+DiachiKH    nvarchar(200),
+DienthoaiKH nvarchar(20),
+idQuyen     int
+references Roles
+)
+go
+
+create table DONDATHANG
+(
+MaDonHang         int identity
+primary key,
+Ngaydat           date,
+ngaygiao          date,
+Tinhtranggiaohang nvarchar(50),
+maKH              int
+references KHACHHANG
+)
+go
+
+create table SACH
+(
+Masach      int identity
+primary key,
+Tensach     nvarchar(100),
+Giaban      decimal(10, 2),
+Mota        nvarchar(500),
+Anhbia      nvarchar(200),
+ngaycapnhat date,
+Soluongton  int,
+MaCD        int
+references CHUDE,
+MaNXB       int
+references NHAXUATBAN
+)
+go
+
+create table CHITIETDONDATHANG
+(
+MaDonHang int not null
+references DONDATHANG,
+Masach    int not null
+references SACH,
+soluong   int,
+primary key (MaDonHang, Masach)
+)
+go
+
+create table Cart
+(
+id       int identity
+primary key,
+maKH     int
+references KHACHHANG,
+ma_sach  int
+references SACH,
+gia      decimal(10, 2),
+sl       int,
+tongtien decimal(10, 2)
+)
+go
+
+create table TACGIA
+(
+MaTG      int identity
+primary key,
+TenTG     nvarchar(100),
+Diachi    nvarchar(200),
+Tieusu    nvarchar(500),
+Dienthoai nvarchar(20)
+)
+go
+
+create table VIETSAC
+(
+MaTG   int not null
+references TACGIA,
+Masach int not null
+references SACH,
+vaitro nvarchar(50),
+Vitri  nvarchar(50),
+primary key (MaTG, Masach)
+)
+go
+
+
+

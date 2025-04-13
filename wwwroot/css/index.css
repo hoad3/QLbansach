@@ -1,0 +1,49 @@
+﻿.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.h-auto {
+    height: auto;
+}
+.w-auto{
+    width: auto;
+}
+.w-full {
+    width: 100%;
+}
+
+.w-screen {
+    width: 100vw;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.place-content-end {
+    place-content: end;
+}
+
+.gap-4 {
+    gap: 1rem/* 16px */;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}

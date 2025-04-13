@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Thanh toán thất bại";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-times-circle text-danger" style="font-size: 64px;"></i>
+                    </div>
+                    <h2 class="card-title text-danger mb-4">Thanh toán thất bại!</h2>
+                    <div class="alert alert-danger mb-4">
+                        @TempData["PaymentError"]
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="@Url.Action("Checkout", "Order")" class="btn btn-primary">Thử lại</a>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary">Quay về trang chủ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* @section Scripts { *@
+@*     <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script> *@
+@* }  *@

@@ -1,0 +1,59 @@
+@model IEnumerable<QLbansach_tutorial.Models.Dondathang>
+
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Lịch sử đơn hàng</h2>
+    
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Bạn chưa có đơn hàng nào.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Mã đơn hàng</th>
+                        <th>Số điện thoại</th>
+                        <th>Ngày đặt</th>
+                        <th>Địa chỉ</th>
+                        <th>Trạng thái giao hàng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.MaDonHang</td>
+                            <td>@order.Chitietdonhangs.FirstOrDefault()?.sdt</td>
+                            <td>@order.Ngatdat?.ToString("dd/MM/yyyy")</td>
+                            <td>@order.Chitietdonhangs.FirstOrDefault()?.Diachi</td>
+                            <td>
+                                @if (order.Tinhtranggiaohang == "Đã giao hàng")
+                                {
+                                    <span class="badge badge-success">Đã giao hàng</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">@order.Tinhtranggiaohang</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="/Order/OrderDetail/@order.MaDonHang" class="btn btn-sm btn-info">
+                                    Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div> 

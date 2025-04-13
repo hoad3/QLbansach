@@ -1,0 +1,21 @@
+@model IEnumerable<QLbansach_tutorial.Models.Sach>
+
+@foreach (var sach in Model)
+{
+    <div class="col-md-3">
+        <div class="product-item">
+            <figure class="product-style">
+                <a asp-controller="Sach" asp-action="Details" asp-route-id="@sach.Masach">
+                    <img src="@sach.Anhbia" alt="@sach.Tensach" class="product-item">
+                </a>
+                <button type="button" class="add-to-cart" data-product-tile="add-to-cart">Add to Cart</button>
+            </figure>
+            <figcaption>
+                <h3>@sach.Tensach</h3>
+                <span>@sach.MaNxbNavigation?.TenNxb</span>
+                <div class="item-price">@sach.Giaban</div>
+            </figcaption>
+        </div>
+    </div>
+} 
+

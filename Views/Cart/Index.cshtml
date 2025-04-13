@@ -1,0 +1,151 @@
+@model IEnumerable<QLbansach_tutorial.Models.Cart>
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Giỏ hàng</h2>
+    
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Giỏ hàng của bạn đang trống.
+        </div>
+        <a href="/Sach" class="btn btn-primary">Tiếp tục mua sắm</a>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="@item.MaSachNavigation?.Anhbia" alt="@item.MaSachNavigation?.Tensach" 
+                                         class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                                    <div class="ml-3">
+                                        <h6 class="mb-0">@item.MaSachNavigation?.Tensach</h6>
+                                        <small class="text-muted">@item.MaSachNavigation?.Masach</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@string.Format("{0:N0}", item.Gia) đ</td>
+                            <td>
+                                <div class="input-group" style="max-width: 150px;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-outline-secondary decrease-quantity" type="button" 
+                                                data-book-id="@item.MaSach">-</button>
+                                    </div>
+                                    <input type="text" class="form-control text-center quantity" 
+                                           value="@item.Sl" data-book-id="@item.MaSach">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary increase-quantity" type="button" 
+                                                data-book-id="@item.MaSach">+</button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@string.Format("{0:N0}", item.Tongtien) đ</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm remove-item" data-book-id="@item.MaSach">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
+                        <td><strong>@ViewBag.Total.ToString("N0") đ</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="/Sach" class="btn btn-outline-primary">Tiếp tục mua sắm</a>
+            <a href="/Order/Checkout" class="btn btn-primary">Thanh toán</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Xử lý tăng số lượng
+            $('.increase-quantity').on('click', function() {
+                const bookId = $(this).data('book-id');
+                const input = $(`input.quantity[data-book-id="${bookId}"]`);
+                const currentValue = parseInt(input.val());
+                input.val(currentValue + 1);
+                updateQuantity(bookId, currentValue + 1);
+            });
+
+            // Xử lý giảm số lượng
+            $('.decrease-quantity').on('click', function() {
+                const bookId = $(this).data('book-id');
+                const input = $(`input.quantity[data-book-id="${bookId}"]`);
+                const currentValue = parseInt(input.val());
+                if (currentValue > 1) {
+                    input.val(currentValue - 1);
+                    updateQuantity(bookId, currentValue - 1);
+                }
+            });
+
+            // Xử lý xóa sản phẩm
+            $('.remove-item').on('click', function() {
+                const bookId = $(this).data('book-id');
+                if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                    $.ajax({
+                        url: '/Cart/RemoveItem',
+                        type: 'POST',
+                        data: { bookId: bookId },
+                        success: function(response) {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                alert(response.message || 'Có lỗi xảy ra khi xóa sản phẩm');
+                            }
+                        },
+                        error: function() {
+                            alert('Có lỗi xảy ra khi xóa sản phẩm');
+                        }
+                    });
+                }
+            });
+
+            // Cập nhật số lượng
+            function updateQuantity(bookId, quantity) {
+                $.ajax({
+                    url: '/Cart/UpdateQuantity',
+                    type: 'POST',
+                    data: { bookId: bookId, quantity: quantity },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi cập nhật số lượng');
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi cập nhật số lượng');
+                    }
+                });
+            }
+        });
+    </script>
+}
+
